@@ -94,7 +94,7 @@ def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp:
             ws.update_cell(idx, 2, new_qty)   # Jumlah
             ws.update_cell(idx, 5, timestamp) # Tanggal
             return
-    ws.append_row([nama, int(jumlah), satuan, tempat, timestamp])
+    ws.append_row([nama, int(jumlah), satuan, tempat, timestamp, image_url])
 
 
 def decrease_item(ws, nama: str, jumlah: int, satuan: str, tempat_display: str):
@@ -176,7 +176,7 @@ if menu == "Tambahkan barang":
             # Upload gambar ke Cloudinary
             upload_result = cloudinary.uploader.upload(gambar, folder="inventory_items")
             image_url = upload_result["secure_url"]
-
+            st.write("Uploaded Image URL:", image_url)
             ws = get_ws(tempat_display)
             upsert_item(
                 ws,
