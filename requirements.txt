@@ -4,3 +4,7 @@ google-auth
 google-auth-oauthlib
 google-api-python-client
 cloudinary
+streamlit
+gspread-formatting
+google-auth-httplib2
+oauthlib
