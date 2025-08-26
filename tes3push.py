@@ -94,7 +94,7 @@ def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp:
             ws.update_cell(idx, 2, new_qty)   # Jumlah
             ws.update_cell(idx, 5, timestamp) # Tanggal
             return
-    ws.append_row([nama, int(jumlah), satuan, tempat, timestamp, image_url])
+    ws.append_row([nama, int(jumlah), satuan, tempat, timestamp,f'=IMAGE("{image_url}")])
 
 
 def decrease_item(ws, nama: str, jumlah: int, satuan: str, tempat_display: str):
