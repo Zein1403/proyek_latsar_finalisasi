@@ -18,8 +18,8 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/drive.file",
 ]
-SPREADSHEET_ID = st.secrets["SPREADSHEET_ID"]
-FOLDER_ID = st.secrets["FOLDER_ID"]
+spreadsheet_id = "1pwpsng3Uoxp2WV-JTrwAk8j7Ct174qbk1rK3R1X2C7I"
+FOLDER_ID = "1Nfz9wDdW6SjY_2eXY_crxWLZUTJFt_IX"
 
 
 cloudinary.config(
