@@ -8,3 +8,4 @@ streamlit
 gspread-formatting
 google-auth-httplib2
 oauthlib
+oauth2client
