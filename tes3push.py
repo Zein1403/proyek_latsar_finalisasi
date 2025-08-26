@@ -185,6 +185,7 @@ if menu == "Tambahkan barang":
                 satuan,
                 tempat_display,
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                image_url
             )
             st.success("✅ Data berhasil disimpan / diperbarui.")
             st.image(image_url)
