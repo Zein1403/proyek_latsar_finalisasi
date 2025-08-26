@@ -56,7 +56,7 @@ FLOOR_TO_SHEET = {
     "shelter taman alat": "shelter",
 }
 
-HEADERS = ["Nama", "Jumlah", "Satuan", "Tempat", "Tanggal"]
+HEADERS = ["Nama", "Jumlah", "Satuan", "Tempat", "Tanggal", "url"]
 
 
 
