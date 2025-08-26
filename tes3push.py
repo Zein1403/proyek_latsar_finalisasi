@@ -82,7 +82,7 @@ def list_records(ws):
     return ws.get_all_records(expected_headers=HEADERS)
 
 
-def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp: str):
+def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp: str, image_url: str):
     """
     Add 'jumlah' to an existing row that matches (nama+satuan),
     else append a fresh row.
@@ -94,7 +94,7 @@ def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp:
             ws.update_cell(idx, 2, new_qty)   # Jumlah
             ws.update_cell(idx, 5, timestamp) # Tanggal
             return
-    ws.append_row([nama, int(jumlah), satuan, tempat, timestamp,f'=IMAGE("{image_url}")])
+    ws.append_row([nama, int(jumlah), satuan, tempat, timestamp, image_url])
 
 
 def decrease_item(ws, nama: str, jumlah: int, satuan: str, tempat_display: str):
