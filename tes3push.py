@@ -206,13 +206,13 @@ if menu == "Tambahkan barang":
             #f'=IMAGE("{qr_url}", 4, 100, 100)',
             qr_url
         )    
-            st.success("✅ Data berhasil disimpan / diperbarui.")
-            st.image(image_url)
-            st.write(f"🔗 [Lihat Gambar]({image_url})")
+        st.success("✅ Data berhasil disimpan / diperbarui.")
+        st.image(image_url)
+        st.write(f"🔗 [Lihat Gambar]({image_url})")
 
-            st.success("✅ Data berhasil disimpan / diperbarui.")
-            st.image(img_qr, caption="QR Code Barang", width=200)
-            st.success("✅ Data + QR berhasil disimpan ke Google Sheet!")
+        st.success("✅ Data berhasil disimpan / diperbarui.")
+        st.image(img_qr, caption="QR Code Barang", width=200)
+        st.success("✅ Data + QR berhasil disimpan ke Google Sheet!")
 elif menu == "Kurangi Barang":
     st.subheader("➖ Kurangi Barang (Pelepasan)")
     tempat_display = st.selectbox("Gudang", list(FLOOR_TO_SHEET.keys()))
