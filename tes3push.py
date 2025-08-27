@@ -182,22 +182,22 @@ if menu == "Tambahkan barang":
             image_url = upload_result["secure_url"]
             st.write("Uploaded Image URL:", image_url)
             qr = qrcode.QRCode(version=1, box_size=10, border=4)
-                qr.add_data(image_url)
-                qr.make(fit=True)
-                img_qr = qr.make_image(fill="black", back_color="white")
+            qr.add_data(image_url)
+            qr.make(fit=True)
+            img_qr = qr.make_image(fill="black", back_color="white")
 
-                # Simpan QR ke memory buffer
-                buffer = BytesIO()
-                img_qr.save(buffer, format="PNG")
-                buffer.seek(0)
+             # Simpan QR ke memory buffer
+            buffer = BytesIO()
+            img_qr.save(buffer, format="PNG")
+            buffer.seek(0)
 
                 # Upload QR ke Cloudinary juga
-                qr_upload = cloudinary.uploader.upload(
-                    buffer,
-                    folder="inventory_qr",
-                    public_id=f"qr_{nama}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-                )
-                qr_url = qr_upload.get("secure_url", "")
+            qr_upload = cloudinary.uploader.upload(
+            buffer,
+            folder="inventory_qr",
+            public_id=f"qr_{nama}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            )
+            qr_url = qr_upload.get("secure_url", "")
             ws = get_ws(tempat_display)
             upsert_item(
                 ws,
