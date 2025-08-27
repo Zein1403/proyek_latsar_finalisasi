@@ -189,11 +189,11 @@ if menu == "Tambahkan barang":
 
         # Upload QR ke Cloudinary
             qr_upload = cloudinary.uploader.upload(
-            buffer,
-            folder="qr_codes",
-            public_id=f"qr_{nama}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+                buffer,
+                folder="qr_codes",
+                public_id=f"qr_{nama}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
             )
-            qr_url = qr_upload["secure_url"]
+        qr_url = qr_upload["secure_url"
             ws = get_ws(tempat_display)
             upsert_item(
                 ws,
