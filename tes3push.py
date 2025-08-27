@@ -206,6 +206,7 @@ if menu == "Tambahkan barang":
             image_url,
             #f'=IMAGE("{qr_url}", 4, 100, 100)',
             qr_url
+            f'=IMAGE("{qr_url}", 4, 100, 100)'
         )    
        # st.success("✅ Data berhasil disimpan / diperbarui.")
        # st.image(image_url)
