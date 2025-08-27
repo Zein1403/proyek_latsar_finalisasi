@@ -164,7 +164,7 @@ def move_item(source_ws, target_ws, item_name: str, jumlah: int, satuan: str,
 # =========================
 # UI
 # =========================
-st.title("📦 Inventory + 📤 Upload to Shared Drive")
+st.title("📦 Inventoria ")
 
 menu = st.selectbox(
     "Menu",
@@ -172,7 +172,7 @@ menu = st.selectbox(
 )
 
 if menu == "Tambahkan barang":
-    st.subheader("➕ Tambah Barang")
+    st.subheader("➕ Tambah Barang + 📤 Upload Gambar")
     nama = st.text_input("Nama Barang")
     jumlah = st.number_input("Jumlah", min_value=1, step=1)
     satuan = st.selectbox("Satuan", ["Meter", "kg", "liter", "buah"])
