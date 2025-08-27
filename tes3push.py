@@ -97,7 +97,7 @@ def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp:
             new_qty = int(row["Jumlah"]) + int(jumlah)
             ws.update_cell(idx, 2, new_qty)   # Jumlah
             ws.update_cell(idx, 5, timestamp) # Tanggal
-            ws.update_cell(idx, 7, image_url)
+            #ws.update_cell(idx, 7, image_url)
             ws.update_cell(idx, 8, f'=IMAGE("{qr_url}", 4, 100, 100)') 
             return
     ws.append_row([nama, int(jumlah), satuan, tempat, timestamp, image_url])
@@ -204,9 +204,9 @@ if menu == "Tambahkan barang":
             satuan,
             tempat_display,
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            image_url,
+            #image_url,
             #f'=IMAGE("{qr_url}", 4, 100, 100)',
-            qr_url,
+            #qr_url,
             f'=IMAGE("{qr_url}", 4, 100, 100)'
         )    
        # st.success("✅ Data berhasil disimpan / diperbarui.")
