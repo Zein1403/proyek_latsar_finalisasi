@@ -181,9 +181,8 @@ if menu == "Tambahkan barang":
             # Upload gambar ke Cloudinary
             upload_result = cloudinary.uploader.upload(gambar, folder="inventory_items")
             image_url = upload_result["secure_url"]
+       # 2. Generate QR Code dari image_url
             qr = qrcode.make(image_url)
-
-        # Convert ke buffer (PNG) biar bisa upload ke Cloudinary
             buffer = BytesIO()
             qr.save(buffer, format="PNG")
             buffer.seek(0)
@@ -194,6 +193,7 @@ if menu == "Tambahkan barang":
                 folder="qr_codes",
                 public_id=f"qr_{nama}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
             )
+            
         qr_url = qr_upload["secure_url"]
         ws = get_ws(tempat_display)
         upsert_item(
@@ -207,13 +207,19 @@ if menu == "Tambahkan barang":
             #f'=IMAGE("{qr_url}", 4, 100, 100)',
             qr_url
         )    
-        st.success("✅ Data berhasil disimpan / diperbarui.")
-        st.image(image_url)
-        st.write(f"🔗 [Lihat Gambar]({image_url})")
+       # st.success("✅ Data berhasil disimpan / diperbarui.")
+       # st.image(image_url)
+       # st.write(f"🔗 [Lihat Gambar]({image_url})")
+
+       # st.success("✅ Data berhasil disimpan / diperbarui.")
+      #  st.image(img_url, caption="QR Code Barang", width=200)
+      #  st.success("✅ Data + QR berhasil disimpan ke Google Sheet!")
 
         st.success("✅ Data berhasil disimpan / diperbarui.")
-        st.image(img_url, caption="QR Code Barang", width=200)
-        st.success("✅ Data + QR berhasil disimpan ke Google Sheet!")
+        st.image(image_url, caption="📷 Gambar Barang", width=200)
+        st.image(qr_url, caption="📱 QR Code Barang", width=200)
+        st.write(f"🔗 [Lihat Gambar Barang]({image_url})")
+        st.write(f"🔗 [Lihat QR Code]({qr_url})")
 elif menu == "Kurangi Barang":
     st.subheader("➖ Kurangi Barang (Pelepasan)")
     tempat_display = st.selectbox("Gudang", list(FLOOR_TO_SHEET.keys()))
