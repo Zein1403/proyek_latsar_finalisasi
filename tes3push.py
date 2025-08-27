@@ -76,7 +76,7 @@ def ensure_header(ws):
     """Ensure the header row is exactly HEADERS."""
     first_row = ws.row_values(1)
     if first_row != HEADERS:
-        ws.update("A1:E1", [HEADERS])
+        ws.update("A1:G1", [HEADERS])
 
 
 def list_records(ws):
