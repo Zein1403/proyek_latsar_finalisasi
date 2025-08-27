@@ -205,9 +205,9 @@ if menu == "Tambahkan barang":
             tempat_display,
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             #image_url,
-            #f'=IMAGE("{qr_url}", 4, 100, 100)',
+            #,
             qr_url,
-            f'=IMAGE("{qr_url}")'
+            f'=IMAGE("{qr_url}", 4, 100, 100)'
         )    
        # st.success("✅ Data berhasil disimpan / diperbarui.")
        # st.image(image_url)
