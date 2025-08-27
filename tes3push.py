@@ -195,17 +195,17 @@ if menu == "Tambahkan barang":
             )
         qr_url = qr_upload["secure_url"]
         ws = get_ws(tempat_display)
-            upsert_item(
-                ws,
-                nama,
-                jumlah,
-                satuan,
-                tempat_display,
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                image_url,
-                #f'=IMAGE("{qr_url}", 4, 100, 100)',
-                qr_url
-            )    
+        upsert_item(
+            ws,
+            nama,
+            jumlah,
+            satuan,
+            tempat_display,
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            image_url,
+            #f'=IMAGE("{qr_url}", 4, 100, 100)',
+            qr_url
+        )    
             st.success("✅ Data berhasil disimpan / diperbarui.")
             st.image(image_url)
             st.write(f"🔗 [Lihat Gambar]({image_url})")
