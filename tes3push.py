@@ -21,17 +21,7 @@ st.set_page_config(
     layout="wide",                                 # "centered" or "wide"
     initial_sidebar_state="expanded"               # "expanded" or "collapsed"
 )
-st.markdown(
-    """
-    <style>
-        /* Hide Streamlit branding in header and footer */
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive",
