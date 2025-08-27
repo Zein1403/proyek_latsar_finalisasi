@@ -212,7 +212,7 @@ if menu == "Tambahkan barang":
         st.write(f"🔗 [Lihat Gambar]({image_url})")
 
         st.success("✅ Data berhasil disimpan / diperbarui.")
-        st.image(img_qr, caption="QR Code Barang", width=200)
+        st.image(img_url, caption="QR Code Barang", width=200)
         st.success("✅ Data + QR berhasil disimpan ke Google Sheet!")
 elif menu == "Kurangi Barang":
     st.subheader("➖ Kurangi Barang (Pelepasan)")
