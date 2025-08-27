@@ -16,7 +16,7 @@ import qrcode
 from io import BytesIO
 
 st.set_page_config(
-    page_title="📦 Inventory Management System",   # Title shown in browser tab
+    page_title=" Inventory Management System",   # Title shown in browser tab
     page_icon="📦",                                # Favicon (emoji or image path)
     layout="wide",                                 # "centered" or "wide"
     initial_sidebar_state="expanded"               # "expanded" or "collapsed"
