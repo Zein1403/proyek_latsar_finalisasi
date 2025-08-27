@@ -179,19 +179,16 @@ if menu == "Tambahkan barang":
             image_url = upload_result["secure_url"]
             st.write("Uploaded Image URL:", image_url)
             ws = get_ws(tempat_display)
-            if not image_url:
-                st.error("Upload ke Cloudinary gagal, URL kosong!")
-                else :
-                upsert_item(
-                    ws,
-                    nama,
-                    jumlah,
-                    satuan,
-                    tempat_display,
-                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    image_url
-                )    
-                st.success("✅ Data berhasil disimpan / diperbarui.")
+            upsert_item(
+                ws,
+                nama,
+                jumlah,
+                satuan,
+                tempat_display,
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                image_url
+            )    
+            st.success("✅ Data berhasil disimpan / diperbarui.")
             st.image(image_url)
             st.write(f"🔗 [Lihat Gambar]({image_url})")
 
