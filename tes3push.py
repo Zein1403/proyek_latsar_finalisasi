@@ -161,7 +161,7 @@ st.title("📦 Inventory + 📤 Upload to Shared Drive")
 
 menu = st.selectbox(
     "Menu",
-    ["Tambahkan barang", "Kurangi Barang", "Pindahkan Barang", "Lihat Data", "Upload Gambar/Video"],
+    ["Tambahkan barang", "Kurangi Barang", "Pindahkan Barang", "Lihat Data"],
 )
 
 if menu == "Tambahkan barang":
