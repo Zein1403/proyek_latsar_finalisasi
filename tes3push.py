@@ -229,7 +229,7 @@ if menu == "Tambahkan barang":
         st.write(f"🔗 [Lihat Gambar Barang]({image_url})")
         st.write(f"🔗 [Lihat QR Code]({qr_url})")
 elif menu == "Kurangi Barang":
-    st.subheader("➖ Kurangi Barang (Pelepasan)")
+    st.subheader("➖ Kurangi Barang")
     tempat_display = st.selectbox("Gudang", list(FLOOR_TO_SHEET.keys()))
     nama = st.text_input("Nama Barang")
     jumlah = st.number_input("Jumlah yang dikurangi", min_value=1, step=1)
