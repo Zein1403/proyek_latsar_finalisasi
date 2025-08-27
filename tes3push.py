@@ -86,6 +86,7 @@ def list_records(ws):
 
 
 def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp: str, image_url: str):
+
     """
     Add 'jumlah' to an existing row that matches (nama+satuan),
     else append a fresh row.
