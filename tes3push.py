@@ -12,6 +12,9 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 import cloudinary
 import cloudinary.uploader
+import qrcode
+from io import BytesIO
+
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -178,6 +181,23 @@ if menu == "Tambahkan barang":
             upload_result = cloudinary.uploader.upload(gambar, folder="inventory_items")
             image_url = upload_result["secure_url"]
             st.write("Uploaded Image URL:", image_url)
+            qr = qrcode.QRCode(version=1, box_size=10, border=4)
+                qr.add_data(image_url)
+                qr.make(fit=True)
+                img_qr = qr.make_image(fill="black", back_color="white")
+
+                # Simpan QR ke memory buffer
+                buffer = BytesIO()
+                img_qr.save(buffer, format="PNG")
+                buffer.seek(0)
+
+                # Upload QR ke Cloudinary juga
+                qr_upload = cloudinary.uploader.upload(
+                    buffer,
+                    folder="inventory_qr",
+                    public_id=f"qr_{nama}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+                )
+                qr_url = qr_upload.get("secure_url", "")
             ws = get_ws(tempat_display)
             upsert_item(
                 ws,
@@ -186,14 +206,16 @@ if menu == "Tambahkan barang":
                 satuan,
                 tempat_display,
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                image_url
+                image_url,
+                f'=IMAGE("{qr_url}", 4, 100, 100)'
             )    
             st.success("✅ Data berhasil disimpan / diperbarui.")
             st.image(image_url)
             st.write(f"🔗 [Lihat Gambar]({image_url})")
 
             st.success("✅ Data berhasil disimpan / diperbarui.")
-
+            st.image(img_qr, caption="QR Code Barang", width=200)
+            st.success("✅ Data + QR berhasil disimpan ke Google Sheet!")
 elif menu == "Kurangi Barang":
     st.subheader("➖ Kurangi Barang (Pelepasan)")
     tempat_display = st.selectbox("Gudang", list(FLOOR_TO_SHEET.keys()))
