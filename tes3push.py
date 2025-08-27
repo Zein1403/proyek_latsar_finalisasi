@@ -194,7 +194,7 @@ if menu == "Tambahkan barang":
                 public_id=f"qr_{nama}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
             )
         qr_url = qr_upload["secure_url"]
-            ws = get_ws(tempat_display)
+        ws = get_ws(tempat_display)
             upsert_item(
                 ws,
                 nama,
