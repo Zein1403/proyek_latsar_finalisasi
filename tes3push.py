@@ -20,8 +20,7 @@ st.set_page_config(
     page_icon="logo-bmkg.png",                                # Favicon (emoji or image path)
     layout="wide",                                 # "centered" or "wide"
     initial_sidebar_state="expanded"               # "expanded" or "collapsed"
-)
-hide_streamlit_style = """
+    hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}  /* hides hamburger menu top right */
     footer {visibility: hidden;}     /* hides "Made with Streamlit" */
@@ -29,6 +28,8 @@ hide_streamlit_style = """
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+)
+
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive",
