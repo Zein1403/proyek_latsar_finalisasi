@@ -27,7 +27,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/drive.file",
 ]
-spreadsheet_id = "1pwpsng3Uoxp2WV-JTrwAk8j7Ct174qbk1rK3R1X2C7I"
+spreadsheet_id_1 = "1pwpsng3Uoxp2WV-JTrwAk8j7Ct174qbk1rK3R1X2C7I"
 FOLDER_ID = "1Nfz9wDdW6SjY_2eXY_crxWLZUTJFt_IX"
 
 
@@ -45,7 +45,7 @@ creds = Credentials.from_service_account_info(
 client = gspread.authorize(creds)
 
 # Replace with your spreadsheet ID
-SPREADSHEET_ID = st.secrets["gcp"]["spreadsheet_id"]
+SPREADSHEET_ID = st.secrets["gcp"]["spreadsheet_id_1"]
 sheet = client.open_by_key(SPREADSHEET_ID).sheet1
 
 
