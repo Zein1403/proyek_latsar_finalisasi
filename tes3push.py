@@ -166,6 +166,15 @@ def move_item(source_ws, target_ws, item_name: str, jumlah: int, satuan: str,
 # =========================
 st.title("📦 Inventoria ")
 
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}  /* hides hamburger menu top right */
+    footer {visibility: hidden;}     /* hides "Made with Streamlit" */
+    header {visibility: hidden;}     /* hides top header that contains "Fork" link */
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 menu = st.selectbox(
     "Menu",
     ["Tambahkan barang", "Kurangi Barang", "Pindahkan Barang", "Lihat Data"],
