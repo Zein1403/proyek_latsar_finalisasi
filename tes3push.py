@@ -226,7 +226,7 @@ div.stButton > button:hover {
 """, unsafe_allow_html=True)
 menu = st.selectbox(
     "Menu",
-    ["Tambahkan barang", "Kurangi Barang", "Pindahkan Barang", "Lihat Data"],
+    ["Tambahkan peralatan atau suku cadang", "Kurangi alat atau suku cadang", "Pindahkan Barang atau suku cadang", "Lihat Data"],
 )
 
 if menu == "Tambahkan peralatan atau suku cadang":
