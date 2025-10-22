@@ -212,7 +212,7 @@ div.stButton > button:hover {
 
 /* 🔵 Change 'Browse files' upload button color */
 [data-testid="stFileUploader"] section div div button {
-    background-color: #0033cc;      /* BMKG blue */
+    background-color: #0f1729;      /* BMKG blue */
     color: white;
     border-radius: 6px;
     border: none;
