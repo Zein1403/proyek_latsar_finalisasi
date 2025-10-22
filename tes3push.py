@@ -183,7 +183,7 @@ st.markdown("""
 
 /* Sidebar */
 [data-testid="stSidebar"] {
-    background-color: #0f1729; /* Slightly darker blue */
+    background-color: #f0f5fa; /* Slightly darker blue */
 }
 
 /* Text */
