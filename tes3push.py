@@ -194,6 +194,34 @@ body, [data-testid="stMarkdownContainer"] {
 /* Hide footer */
 footer {visibility: hidden;}
 header {visibility: hidden;}
+
+
+/* 🟢 Change 'Simpan' button color */
+div.stButton > button {
+    background-color: #e6ebfa;      /* BMKG green */
+    color: white;                   /* text color */
+    border: None;
+    border-radius: 8px;
+    padding: 0.5em 1.5em;
+    font-weight: bold;
+    transition: 0.3s;
+}
+div.stButton > button:hover {
+    background-color: #1e7a1e;      /* darker green on hover */
+}
+
+/* 🔵 Change 'Browse files' upload button color */
+[data-testid="stFileUploader"] section div div button {
+    background-color: #0033cc;      /* BMKG blue */
+    color: white;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+[data-testid="stFileUploader"] section div div button:hover {
+    background-color: #00008B;      /* darker blue on hover */
+}
 </style>
 """, unsafe_allow_html=True)
 menu = st.selectbox(
