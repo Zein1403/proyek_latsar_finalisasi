@@ -199,7 +199,7 @@ header {visibility: hidden;}
 /* 🟢 Change 'Simpan' button color */
 div.stButton > button {
     background-color: #e6ebfa;      /* BMKG green */
-    color: white;                   /* text color */
+                  /* text color */
     border: None;
     border-radius: 8px;
     padding: 0.5em 1.5em;
@@ -213,7 +213,7 @@ div.stButton > button:hover {
 /* 🔵 Change 'Browse files' upload button color */
 [data-testid="stFileUploader"] section div div button {
     background-color: #0f1729;      /* BMKG blue */
-    color: white;
+   
     border-radius: 6px;
     border: none;
     font-weight: bold;
