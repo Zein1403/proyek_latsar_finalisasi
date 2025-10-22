@@ -193,7 +193,7 @@ body, [data-testid="stMarkdownContainer"] {
 
 /* Hide footer */
 footer {visibility: hidden;}
-
+header {visibility: hidden;}
 
 
 /* 🟢 Change 'Simpan' button color */
