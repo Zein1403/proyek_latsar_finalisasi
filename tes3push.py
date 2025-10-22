@@ -193,6 +193,7 @@ body, [data-testid="stMarkdownContainer"] {
 
 /* Hide footer */
 footer {visibility: hidden;}
+header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 menu = st.selectbox(
