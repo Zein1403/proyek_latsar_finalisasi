@@ -171,7 +171,7 @@ hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}  /* hides hamburger menu top right */
     footer {visibility: hidden;}     /* hides "Made with Streamlit" */
-    header {visibility: hidden;}     /* hides top header that contains "Fork" link */
+    #header {visibility: hidden;}     /* hides top header that contains "Fork" link */
     </style>
 """
 st.markdown("""
