@@ -178,7 +178,7 @@ st.markdown("""
 <style>
 /* Page background */
 [data-testid="stAppViewContainer"] {
-    background-color: #ffffff; /* Light blue */
+    background-color: #f2f6fa; /* Light blue */
 }
 
 /* Sidebar */
