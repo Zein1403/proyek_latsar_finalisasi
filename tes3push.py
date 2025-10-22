@@ -174,8 +174,27 @@ hide_streamlit_style = """
     header {visibility: hidden;}     /* hides top header that contains "Fork" link */
     </style>
 """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* Page background */
+[data-testid="stAppViewContainer"] {
+    background-color: #0f1729; /* Light blue */
+}
 
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background-color: #0f1729; /* Slightly darker blue */
+}
+
+/* Text */
+body, [data-testid="stMarkdownContainer"] {
+    color: #000000; /* Black text */
+}
+
+/* Hide footer */
+footer {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
 menu = st.selectbox(
     "Menu",
     ["Tambahkan barang", "Kurangi Barang", "Pindahkan Barang", "Lihat Data"],
