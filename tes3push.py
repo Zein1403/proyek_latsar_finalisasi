@@ -165,7 +165,7 @@ def move_item(source_ws, target_ws, item_name: str, jumlah: int, satuan: str,
 # =========================
 # UI
 # =========================
-st.title("📦 Inventoria ")
+st.title(" 🌍 Dashboard Inventorir Sub-bidang Kualitas Udara ")
 
 hide_streamlit_style = """
     <style>
