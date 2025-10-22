@@ -178,12 +178,12 @@ st.markdown("""
 <style>
 /* Page background */
 [data-testid="stAppViewContainer"] {
-    background-color: #f2f6fa; /* Light blue */
+    background-color: #f0f6fa; /* Light blue */
 }
 
 /* Sidebar */
 [data-testid="stSidebar"] {
-    background-color: #f0f5fa; /* Slightly darker blue */
+    background-color: #ffffff; /* Slightly darker blue */
 }
 
 /* Text */
