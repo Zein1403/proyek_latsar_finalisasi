@@ -229,7 +229,7 @@ menu = st.selectbox(
     ["Tambahkan barang", "Kurangi Barang", "Pindahkan Barang", "Lihat Data"],
 )
 
-if menu == "Tambahkan barang":
+if menu == "Tambahkan peralatan atau suku cadang":
     st.subheader("➕ Tambah Barang + 📤 Upload Gambar")
     nama = st.text_input("Nama Barang")
     jumlah = st.number_input("Jumlah", min_value=1, step=1)
@@ -286,7 +286,7 @@ if menu == "Tambahkan barang":
         st.image(qr_url, caption="📱 QR Code Barang", width=200)
         st.write(f"🔗 [Lihat Gambar Barang]({image_url})")
         st.write(f"🔗 [Lihat QR Code]({qr_url})")
-elif menu == "Kurangi Barang":
+elif menu == "Kurangi alat atau suku cadang":
     st.subheader("➖ Kurangi Barang")
     tempat_display = st.selectbox("Gudang", list(FLOOR_TO_SHEET.keys()))
     nama = st.text_input("Nama Barang")
@@ -303,7 +303,7 @@ elif menu == "Kurangi Barang":
             except Exception as e:
                 st.error(str(e))
 
-elif menu == "Pindahkan Barang":
+elif menu == "Pindahkan Barang atau suku cadang":
     st.subheader("🔄 Pindahkan Barang")
     source_display = st.selectbox("Dari", list(FLOOR_TO_SHEET.keys()))
     target_display = st.selectbox("Ke", list(FLOOR_TO_SHEET.keys()))
