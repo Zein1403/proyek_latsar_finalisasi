@@ -31,6 +31,7 @@ SCOPES = [
 
 spreadsheet_id_1 = "1pwpsng3Uoxp2WV-JTrwAk8j7Ct174qbk1rK3R1X2C7I"
 FOLDER_ID = "1Nfz9wDdW6SjY_2eXY_crxWLZUTJFt_IX"
+LOG_SPREADSHEET_ID="1CBHd51k5_3XXvBJ093USsrkXXw5lPBLh6SjQIXdcKOA"
 
 cloudinary.config(
     cloud_name=st.secrets["cloudinary"]["cloud_name"],
@@ -57,6 +58,7 @@ if not SPREADSHEET_ID or not FOLDER_ID:
 gs_client = gspread.authorize(creds)
 drive_service = build("drive", "v3", credentials=creds)
 spreadsheet = gs_client.open_by_key(SPREADSHEET_ID)
+log_spreadsheet = gs_client.open_by_key(LOG_SPREADSHEET_ID)
 
 # Map display names -> worksheet names
 FLOOR_TO_SHEET = {
@@ -160,6 +162,52 @@ def move_item(source_ws, target_ws, item_name: str, jumlah: int, satuan: str,
             )
             return
     raise ValueError(f"Barang '{item_name}' ({satuan}) tidak ditemukan di {source_display}.")
+
+LOG_HEADERS = ["Item", "Action", "Jumlah", "Satuan", "Tempat Asal", "Tempat Tujuan", "Waktu", "QR_Code"]
+
+def get_log_ws():
+    """Return a worksheet for current month (create if not exists)."""
+    month_tag = datetime.now().strftime("%Y_%m")  # e.g. "2025_10"
+    sheet_name = f"Log_{month_tag}"
+
+    try:
+        ws = log_spreadsheet.worksheet(sheet_name)
+    except:
+        ws = log_spreadsheet.add_worksheet(title=sheet_name, rows=100, cols=len(LOG_HEADERS))
+        ws.update("A1:H1", [LOG_HEADERS])
+    return ws
+
+
+def write_log(item, action, jumlah, satuan, tempat_asal="", tempat_tujuan="", qr_url=""):
+    """Append a new row to monthly log sheet."""
+    ws = get_log_ws()
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Add IMAGE formula for QR code in last column
+    image_formula = f'=IMAGE("{qr_url}", 4, 100, 100)' if qr_url else ""
+    ws.append_row([item, action, jumlah, satuan, tempat_asal, tempat_tujuan, timestamp, image_formula])
+
+
+def notify_gas_log(nama, jumlah, satuan, tempat, timestamp, qr_url=None):
+    GAS_URL = "https://script.google.com/macros/s/AKfycbwUL8BrggWowmOOAO20xV0TEYqwXhucSdYwxAU8ppZifj20uxJL83p1JXMk-bztVm-WeQ/exec"
+    payload = {
+        "nama": nama,
+        "jumlah": jumlah,
+        "satuan": satuan,
+        "tempat": tempat,
+        "timestamp": timestamp,
+        "qr_url": qr_url,
+    }
+
+    response = requests.post(GAS_URL, data=json.dumps(payload))
+    try:
+        result = response.json()
+        if result.get("status") == "success":
+            print("✅ Google Doc created:", result["doc_url"])
+        else:
+            print("❌ GAS Error:", result.get("message"))
+    except Exception as e:
+        print("❌ Response Error:", e, response.text)
 
 
 # =========================
@@ -271,8 +319,18 @@ if menu == "Tambahkan peralatan atau suku cadang":
             #image_url,
             #,
             qr_url,
-            f'=IMAGE("{qr_url}", 4, 100, 100)'
+            f'=IMAGE("{qr_url}", 4, 100, 100)',
         )    
+        write_log(
+        item=nama,
+        action="Menambahkan",
+        jumlah=jumlah,
+        satuan=satuan,
+        tempat_asal="-",
+        tempat_tujuan=tempat_display,
+        qr_url=qr_url
+        )
+
        # st.success("✅ Data berhasil disimpan / diperbarui.")
        # st.image(image_url)
        # st.write(f"🔗 [Lihat Gambar]({image_url})")
@@ -286,6 +344,7 @@ if menu == "Tambahkan peralatan atau suku cadang":
         st.image(qr_url, caption="📱 QR Code Barang", width=200)
         st.write(f"🔗 [Lihat Gambar Barang]({image_url})")
         st.write(f"🔗 [Lihat QR Code]({qr_url})")
+        
 elif menu == "Kurangi alat atau suku cadang":
     st.subheader("➖ Kurangi Barang")
     tempat_display = st.selectbox("Gudang", list(FLOOR_TO_SHEET.keys()))
@@ -299,6 +358,15 @@ elif menu == "Kurangi alat atau suku cadang":
             try:
                 ws = get_ws(tempat_display)
                 decrease_item(ws, nama, jumlah, satuan, tempat_display)
+                write_log(
+                item=nama,
+                action="Mengurangi",
+                jumlah=jumlah,
+                satuan=satuan,
+                tempat_asal=tempat_display,
+                tempat_tujuan="-"
+                )
+
                 st.success("✅ Stok berhasil dikurangi.")
             except Exception as e:
                 st.error(str(e))
@@ -320,6 +388,15 @@ elif menu == "Pindahkan Barang atau suku cadang":
                 source_ws = get_ws(source_display)
                 target_ws = get_ws(target_display)
                 move_item(source_ws, target_ws, nama, jumlah, satuan, source_display, target_display)
+                write_log(
+                item=nama,
+                action="Memindahkan",
+                jumlah=jumlah,
+                satuan=satuan,
+                tempat_asal=source_display,
+                tempat_tujuan=target_display
+                )
+
                 st.success("✅ Barang berhasil dipindahkan.")
             except Exception as e:
                 st.error(str(e))
@@ -330,6 +407,8 @@ elif menu == "Lihat Data":
     ws = get_ws(tempat_display)
     ensure_header(ws)
     st.dataframe(ws.get_all_records(expected_headers=HEADERS))
+
+
 
 
 
