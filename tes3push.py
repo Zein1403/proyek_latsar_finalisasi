@@ -271,6 +271,33 @@ div.stButton > button:hover {
     background-color: #00008B;      /* darker blue on hover */
 }
 </style>
+
+
+ <style>
+        /* Text input, select box, textarea */
+        .stTextInput > div > div > input,
+        .stNumberInput > div > div > input,
+        .stSelectbox > div > div > select,
+        .stTextArea > div > textarea {
+            border: 2px solid black !important;
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        /* Number input arrows container */
+        .stNumberInput > div > div {
+            border: 2px solid black !important;
+            border-radius: 6px;
+        }
+
+        /* File uploader */
+        .stFileUploader > div {
+            border: 2px solid black !important;
+            padding: 10px;
+            border-radius: 6px;
+        }
+    </style>
+    
 """, unsafe_allow_html=True)
 menu = st.selectbox(
     "Menu",
