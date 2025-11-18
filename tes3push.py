@@ -272,32 +272,42 @@ div.stButton > button:hover {
 }
 </style>
 
+<style>
 
- <style>
-        /* Text input, select box, textarea */
-        .stTextInput > div > div > input,
-        .stNumberInput > div > div > input,
-        .stSelectbox > div > div > select,
-        .stTextArea > div > textarea {
-            border: 2px solid black !important;
-            border-radius: 6px;
-            padding: 8px;
-        }
+    /* GENERAL INPUT WRAPPER (Text, Number, Select, etc.) */
+    .stTextInput > div,
+    .stNumberInput > div,
+    .stSelectbox > div,
+    .stTextArea > div,
+    .stDateInput > div {
+        border: 2px solid #000 !important;
+        border-radius: 8px !important;
+        padding: 4px !important;
+        background-color: white !important;
+    }
 
-        /* Number input arrows container */
-        .stNumberInput > div > div {
-            border: 2px solid black !important;
-            border-radius: 6px;
-        }
+    /* REMOVE Streamlit's default gray box background */
+    .stTextInput > div > div,
+    .stNumberInput > div > div,
+    .stSelectbox > div > div,
+    .stTextArea > div > div {
+        background-color: white !important;
+    }
 
-        /* File uploader */
-        .stFileUploader > div {
-            border: 2px solid black !important;
-            padding: 10px;
-            border-radius: 6px;
-        }
-    </style>
-    
+    /* NUMBER INPUT BUTTONS ( + and - ) */
+    .stNumberInput button {
+        border: none !important;
+        background: transparent !important;
+    }
+
+    /* FILE UPLOADER */
+    .stFileUploader > div {
+        border: 2px solid #000 !important;
+        border-radius: 8px !important;
+        padding: 10px !important;
+    }
+
+</style>
 """, unsafe_allow_html=True)
 menu = st.selectbox(
     "Menu",
