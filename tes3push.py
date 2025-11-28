@@ -424,7 +424,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
             try:
                 source_ws = get_ws(source_display)
                 target_ws = get_ws(target_display)
-                move_item(source_ws, target_ws, nama, jumlah, satuan, source_display, target_display)
+                move_item(source_ws, target_ws, nama, jumlah, satuan, source_display, target_display, qr_url=qr_url)
                 write_log(
                 item=nama,
                 action="Memindahkan",
