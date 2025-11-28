@@ -424,7 +424,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
         if st.button("Pindahkan"):
             if source_display == target_display:
                 st.error("Gudang asal dan tujuan tidak boleh sama.")
-         elif not nama:
+        elif not nama:
             st.error("Nama wajib diisi.")
         else:
             try:
