@@ -39,6 +39,14 @@ cloudinary.config(
     api_secret=st.secrets["cloudinary"]["api_secret"]
 )
 
+def get_qr_by_nama(ws, nama_barang):
+    data = ws.get_all_records()
+
+    for row in data:
+        if row["Nama"].strip().lower() == nama_barang.strip().lower():
+            return row.get("QR_URL") or row.get("QR") or row.get("qr_url")
+
+    raise Exception("QR Code barang tidak ditemukan di Google Sheet.")
 
 creds = Credentials.from_service_account_info(
     st.secrets["gcp_service_account"],
