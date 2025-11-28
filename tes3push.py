@@ -44,7 +44,7 @@ def get_qr_by_nama(ws, nama_barang):
 
     for row in data:
         if row["Nama"].strip().lower() == nama_barang.strip().lower():
-            return row.get("QR_URL") or row.get("QR") or row.get("qr_url")
+            return row.get("url") or row.get("URL") or row.get("qr_url")
 
     raise Exception("QR Code barang tidak ditemukan di Google Sheet.")
 
@@ -457,7 +457,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
                     satuan=satuan,
                     tempat_asal=source_display,
                     tempat_tujuan=target_display,
-                   qr_url=qr_url
+                    qr_url=qr_url
                 )
 
                 st.success("✅ Barang berhasil dipindahkan.")
