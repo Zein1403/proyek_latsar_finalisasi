@@ -416,7 +416,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
     jumlah = st.number_input("Jumlah yang dipindahkan", min_value=1, step=1)
     satuan = st.selectbox("Satuan", ["Meter", "kg", "liter", "buah"])
     
-        if st.button("Pindahkan"):
+    if st.button("Pindahkan"):
             if source_display == target_display:
                 st.error("Gudang asal dan tujuan tidak boleh sama.")
         elif not nama:
