@@ -415,7 +415,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
     nama = st.text_input("Nama Barang")
     jumlah = st.number_input("Jumlah yang dipindahkan", min_value=1, step=1)
     satuan = st.selectbox("Satuan", ["Meter", "kg", "liter", "buah"])
-        def get_qr_by_nama(ws, nama_barang):
+    def get_qr_by_nama(ws, nama_barang):
             data = ws.get_all_records()
 
         for row in data:
