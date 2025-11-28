@@ -167,7 +167,7 @@ def move_item(source_ws, target_ws, item_name: str, jumlah: int, satuan: str,
                 satuan,
                 target_display,
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                url
+                qr_url
             )
             return
     raise ValueError(f"Barang '{item_name}' ({satuan}) tidak ditemukan di {source_display}.")
