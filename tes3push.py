@@ -167,6 +167,7 @@ def move_item(source_ws, target_ws, item_name: str, jumlah: int, satuan: str,
                 satuan,
                 target_display,
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                qr_url=qr_url
             )
             return
     raise ValueError(f"Barang '{item_name}' ({satuan}) tidak ditemukan di {source_display}.")
@@ -446,6 +447,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
                     satuan,
                     source_display,
                     target_display,
+                    qr_url=qr_url
                 )
 
                 write_log(
@@ -455,7 +457,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
                     satuan=satuan,
                     tempat_asal=source_display,
                     tempat_tujuan=target_display,
-                   
+                   qr_url=qr_url
                 )
 
                 st.success("✅ Barang berhasil dipindahkan.")
