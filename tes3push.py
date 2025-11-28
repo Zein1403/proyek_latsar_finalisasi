@@ -415,12 +415,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
     nama = st.text_input("Nama Barang")
     jumlah = st.number_input("Jumlah yang dipindahkan", min_value=1, step=1)
     satuan = st.selectbox("Satuan", ["Meter", "kg", "liter", "buah"])
-    def get_qr_by_nama(ws, nama_barang):
-        data = ws.get_all_records()
-
-        for row in data:
-            if row["Nama"].strip().lower() == nama_barang.strip().lower():
-                return row.get("QR_URL") or row.get("QR") or row.get("qr_url")
+    
         if st.button("Pindahkan"):
             if source_display == target_display:
                 st.error("Gudang asal dan tujuan tidak boleh sama.")
@@ -430,7 +425,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
             try:
                 source_ws = get_ws(source_display)
                 target_ws = get_ws(target_display)
-                move_item(source_ws, target_ws, nama, jumlah, satuan, source_display, target_display, qr_url=qr_url)
+                move_item(source_ws, target_ws, nama, jumlah, satuan, source_display, target_display,  qr_url = get_qr_by_nama(source_ws, nama))
                 write_log(
                 item=nama,
                 action="Memindahkan",
