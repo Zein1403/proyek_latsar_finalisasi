@@ -102,7 +102,9 @@ def list_records(ws):
     return ws.get_all_records(expected_headers=HEADERS)
 
 
-def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp: str, image_url: str, qr_url :str):
+def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp: str,
+                image_url: str = "", qr_url: str = ""):
+
 
     """
     Add 'jumlah' to an existing row that matches (nama+satuan),
@@ -365,7 +367,7 @@ if menu == "Tambahkan peralatan atau suku cadang":
             #image_url,
             #,
             qr_url,
-         #   f'=IMAGE("{qr_url}", 4, 100, 100)',
+           f'=IMAGE("{qr_url}", 4, 100, 100)',
         )    
         write_log(
         item=nama,
