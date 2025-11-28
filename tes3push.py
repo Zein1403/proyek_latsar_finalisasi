@@ -365,7 +365,7 @@ if menu == "Tambahkan peralatan atau suku cadang":
         satuan=satuan,
         tempat_asal="-",
         tempat_tujuan=tempat_display,
-        qr_url=qr_url
+        qr_url=qr_url,
         )
 
        # st.success("✅ Data berhasil disimpan / diperbarui.")
@@ -431,7 +431,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
                 jumlah=jumlah,
                 satuan=satuan,
                 tempat_asal=source_display,
-                tempat_tujuan=target_display
+                tempat_tujuan=target_display,
                 qr_url=qr_url
                 )
 
