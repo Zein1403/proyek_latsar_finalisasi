@@ -447,7 +447,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
                     satuan,
                     source_display,
                     target_display,
-                    url,
+                    qr_url=qr_url
                 )
 
                 write_log(
@@ -457,7 +457,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
                     satuan=satuan,
                     tempat_asal=source_display,
                     tempat_tujuan=target_display,
-                    url,
+                    qr_url=qr_url
                 )
 
                 st.success("✅ Barang berhasil dipindahkan.")
