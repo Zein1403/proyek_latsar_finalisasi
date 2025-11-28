@@ -421,7 +421,7 @@ elif menu == "Pindahkan Barang atau suku cadang":
                 st.error("Gudang asal dan tujuan tidak boleh sama.")
     elif not nama:
             st.error("Nama wajib diisi.")
-        else:
+    else:
             try:
                 source_ws = get_ws(source_display)
                 target_ws = get_ws(target_display)
