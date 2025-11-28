@@ -365,7 +365,7 @@ if menu == "Tambahkan peralatan atau suku cadang":
             #image_url,
             #,
             qr_url,
-            f'=IMAGE("{qr_url}", 4, 100, 100)',
+         #   f'=IMAGE("{qr_url}", 4, 100, 100)',
         )    
         write_log(
         item=nama,
