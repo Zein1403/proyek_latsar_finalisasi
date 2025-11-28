@@ -141,7 +141,7 @@ def decrease_item(ws, nama: str, jumlah: int, satuan: str, tempat_display: str):
 
 
 def move_item(source_ws, target_ws, item_name: str, jumlah: int, satuan: str,
-              source_display: str, target_display: str):
+              source_display: str, target_display: str, qr_url :str):
     """
     Move 'jumlah' from source to target for the matching item (nama+satuan).
     """
