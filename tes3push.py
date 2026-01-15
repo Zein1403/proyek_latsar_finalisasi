@@ -74,8 +74,8 @@ FLOOR_TO_SHEET = {
     "Data Barang yang Dikirim atau Digunakan": "Penggunaan Inventaris",
 }
 
-HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Barang Masuk", 
-           "Tahun Pembuatan Barang", "Tempat Penyimpanan", "Petugas"
+HEADERS = ["No", "Kode Inventaris", "Nama", "Tanggal Masuk", 
+           "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", "Petugas"
            , "url","QR"]
 
 
