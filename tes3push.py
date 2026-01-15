@@ -70,13 +70,13 @@ log_spreadsheet = gs_client.open_by_key(LOG_SPREADSHEET_ID)
 
 # Map display names -> worksheet names
 FLOOR_TO_SHEET = {
-    "gudang lantai 1": "Lantai1",
-    "gudang A lantai 4": "Lantai4A",
-    "gudang B lantai 4": "Lantai4B",
-    "shelter taman alat": "shelter",
+    "Data Inventaris Informasi Kualitas Udara BMKG PUSAT": "Penambahan Inventaris",
+    "Data Barang yang Dikirim atau Digunakan": "Penggunaan Inventaris",
 }
 
-HEADERS = ["Nama", "Jumlah", "Satuan", "Tempat", "Tanggal", "url","QR"]
+HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Barang Masuk", 
+           "Tahun Pembuatan Barang", "Tempat Penyimpanan", "Petugas"
+           , "url","QR"]
 
 
 
