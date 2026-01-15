@@ -226,7 +226,7 @@ def notify_gas_log(nama, jumlah, satuan, tempat, timestamp, qr_url=None):
 # =========================
 st.title(" 🌍 Dashboard Inventorir Bidang Informasi Kualitas Udara ")
 
-hide_streamlit_style = 
+
 st.markdown("""
 <style>
 /* Page background */
