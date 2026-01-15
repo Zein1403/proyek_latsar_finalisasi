@@ -250,9 +250,7 @@ body, [data-testid="stMarkdownContainer"] {
     color: #000000; /* Black text */
 }
 
-/* Hide footer */
-footer {visibility: hidden;}
-header {visibility: hidden;}
+
 
 
 /* 🟢 Change 'Simpan' button color */
