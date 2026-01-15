@@ -297,13 +297,7 @@ div.stButton > button:hover {
         background-color: white !important;
     }
 
-    /* REMOVE Streamlit's default gray box background */
-    .stTextInput > div > div,
-    .stNumberInput > div > div,
-    .stSelectbox > div > div,
-    .stTextArea > div > div {
-        background-color: white !important;
-    }
+   
 
     /* NUMBER INPUT BUTTONS ( + and - ) */
     .stNumberInput button {
