@@ -516,7 +516,7 @@ elif menu == "Menggunakan atau Mengirimkan barang":
     st.subheader("➖ Kurangi Barang")
     
     # 1. Define all necessary inputs for this specific menu
-    tempat_display = st.selectbox("Tempat", list(FLOOR_TO_SHEET.keys()))
+    tempat_display = "Penambahan Inventaris"
     nama = st.text_input("Nama Barang yang Diambil")
     kondisi = st.selectbox("Kondisi Barang", ["Baik", "Rusak"])
     jumlah = st.number_input("Jumlah", min_value=1)
