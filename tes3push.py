@@ -61,8 +61,8 @@ log_spreadsheet = gs_client.open_by_key(LOG_SPREADSHEET_ID)
 
 # Map display names -> worksheet names
 FLOOR_TO_SHEET = {
-    "Data Inventaris Informasi Kualitas Udara BMKG PUSAT": "Penambahan Inventaris",
-    "Data Barang yang Dikirim atau Digunakan": "Penggunaan Inventaris",
+    "Penambahan Inventaris" : "Data Inventaris Informasi Kualitas Udara BMKG PUSAT" ,
+    "Penggunaan Inventaris" : "Data Barang yang Dikirim atau Digunakan",
 }
 
 SOURCE_FLOOR = "Penambahan Inventaris"         
