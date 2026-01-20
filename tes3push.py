@@ -528,17 +528,7 @@ elif menu == "Menggunakan atau Mengirimkan barang":
                 st.success(f"✅ {jumlah} {nama} berhasil dipindahkan ke Barang Terpakai.")
             except Exception as e:
                 st.error(str(e))
-                write_log(
-            item_data=item_info, 
-            action="USE", # This triggers the '--- DIGUNAKAN ---' label in your log
-            qty_used=jumlah, 
-            petugas=petugas, 
-            keterangan=f"Diambil dari {tempat_display}"
-        )
-
-        st.success(f"✅ Stok berhasil dikurangi dan dicatat di Log.")
-        except Exception as e:
-            st.error(str(e))
+           
                                            
 elif menu == "Lihat Data":
     st.subheader("📊 Data Gudang")
