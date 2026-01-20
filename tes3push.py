@@ -259,6 +259,21 @@ def get_log_ws():
         # Fix the range to A1:J1 (10 columns)
         ws.update("A1:J1", [LOG_HEADERS])
     return ws
+def notify_gas_log(nama, jumlah, kondisi, tempat, timestamp):
+    """Triggers the Google Apps Script to create a Doc."""
+    GAS_URL = "https://script.google.com/macros/s/AKfycbwUL8BrggWowmOOAO20xV0TEYqwXhucSdYwxAU8ppZifj20uxJL83p1JXMk-bztVm-WeQ/exec"
+    payload = {
+        "nama": nama,
+        "jumlah": jumlah,
+        "kondisi": kondisi,
+        "tempat": tempat,
+        "timestamp": timestamp,
+    }
+    try:
+        response = requests.post(GAS_URL, data=json.dumps(payload))
+        # Silence successful prints to keep the UI clean, or st.toast for success
+    except Exception as e:
+        print(f"❌ GAS Error: {e}")
 def write_log(item_data, action, qty_used, petugas, keterangan=""):
     """
     item_data: a dictionary or row object containing the original item details.
