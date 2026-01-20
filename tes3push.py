@@ -65,26 +65,21 @@ FLOOR_TO_SHEET = {
     "Data Barang yang Dikirim atau Digunakan": "Penggunaan Inventaris",
 }
 
-HEADERS = ["No", "Kode Inventaris", "Nama", "Tanggal Masuk", 
-           "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", "Petugas"
-           , "url","QR"]
+SOURCE_FLOOR = "Penambahan Inventaris"         
+DESTINATION_SHEET = "Penggunaan Inventaris"
 
 
+HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Masuk", 
+           "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", "Kondisi", "Petugas". "keterangan"
+           ]
 
-# =========================
-# SHEETS HELPERS
-# =========================
-def get_ws(floor_display_name: str):
-    """Return the worksheet object for a given floor display name."""
-    sheet_name = FLOOR_TO_SHEET[floor_display_name]
-    return spreadsheet.worksheet(sheet_name)
 
 
 def ensure_header(ws):
     """Ensure the header row is exactly HEADERS."""
     first_row = ws.row_values(1)
     if first_row != HEADERS:
-        ws.update("A1:I1", [HEADERS])
+        ws.update("A1:J1", [HEADERS])
 
 
 def list_records(ws):
@@ -93,79 +88,130 @@ def list_records(ws):
     return ws.get_all_records(expected_headers=HEADERS)
 
 
-def upsert_item(ws, nama: str, jumlah: int, satuan: str, tempat: str, timestamp: str,
-                image_url: str = "", qr_url: str = ""):
-
-
-    """
-    Add 'jumlah' to an existing row that matches (nama+satuan),
-    else append a fresh row.
-    """
+def upsert_item(ws, nama_barang: str, tanggal_masuk: str, 
+                tahun_pembuatan: str, tempat_penyimpanan: str, jumlah: int, 
+                kondisi: str, petugas: str, keterangan: str):
+    
     records = list_records(ws)
-    for idx, row in enumerate(records, start=2):  # 1 is header
-        if row["Nama"] == nama and row["Satuan"] == satuan:
+    
+    # 1. Automatic ID Logic
+    if not records:
+        next_no = 1
+    else:
+        last_no = int(records[-1].get("No", 0))
+        next_no = last_no + 1
+
+    date_slug = str(tanggal_masuk).replace("-", "").replace("/", "")
+    auto_kode = f"INV-{date_slug}-{next_no:03d}"
+
+    # 2. Match Check: Nama Barang + Tanggal Masuk + KONDISI
+    # If all three match, we just add the quantity.
+    for idx, row in enumerate(records, start=2):
+        if (row["Nama Barang"] == nama_barang and 
+            str(row["Tanggal Masuk"]) == str(tanggal_masuk) and
+            row["Kondisi"] == kondisi): # <--- New condition check
+            
+            # Match found: Update Jumlah (Column 7)
             new_qty = int(row["Jumlah"]) + int(jumlah)
-            ws.update_cell(idx, 2, new_qty)   # Jumlah
-            ws.update_cell(idx, 5, timestamp) # Tanggal
-            #ws.update_cell(idx, 7, image_url)
-            ws.update_cell(idx, 8, f'=IMAGE("{qr_url}", 4, 100, 100)') 
+            ws.update_cell(idx, 7, new_qty) 
+            
+            # Optional: Update Keterangan if you want the latest note to show up
+            ws.update_cell(idx, 10, keterangan)
             return
-    ws.append_row([nama, int(jumlah), satuan, tempat, timestamp, image_url])
 
+    # 3. Append New Row (If it's a new item OR a different condition)
+    new_row = [
+        next_no,            # Col 1: No
+        auto_kode,          # Col 2: Kode Inventaris
+        nama_barang,        # Col 3: Nama Barang
+        tanggal_masuk,      # Col 4: Tanggal Masuk
+        tahun_pembuatan,    # Col 5: Tahun Pembuatan
+        tempat_penyimpanan, # Col 6: Tempat Penyimpanan
+        int(jumlah),        # Col 7: Jumlah
+        kondisi,            # Col 8: Kondisi (Status)
+        petugas,            # Col 9: Petugas
+        keterangan          # Col 10: keterangan
+    ]
+    
+    ws.append_row(new_row)
 
-def decrease_item(ws, nama: str, jumlah: int, satuan: str, tempat_display: str):
-    """
-    Decrease quantity from a matching row (nama+satuan). Delete row if qty becomes 0.
-    """
-    records = list_records(ws)
-    for idx, row in enumerate(records, start=2):
-        if row["Nama"] == nama and row["Satuan"] == satuan:
-            current = int(row["Jumlah"])
-            if current < jumlah:
-                raise ValueError(f"Stok {nama} tidak cukup di {tempat_display}. Sisa: {current}")
-            new_qty = current - jumlah
-            if new_qty == 0:
-                ws.delete_rows(idx)
-            else:
-                ws.update_cell(idx, 2, new_qty)
-                ws.update_cell(idx, 5, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            return
-    raise ValueError(f"Item {nama} ({satuan}) tidak ditemukan di {tempat_display}.")
+# Destination (Used) Headers - 9 Columns (Removed 'Tempat Penyimpanan')
+HEADERS_USED = ["No", "Kode Inventaris", "Nama", "Tanggal Digunakan", 
+                "Tahun Pembuatan", "Jumlah", "Kondisi", "Petugas", "Keterangan"]
 
+def transfer_item(source_floor: str, target_sheet_name: str, item_name: str, 
+                  kondisi: str, jumlah: int, petugas: str, keterangan: str = ""):
+    
+    ws_src = get_ws(source_floor)
+    
+    # 1. Identify Target Worksheet
+    if target_sheet_name == "Barang Terpakai":
+        ws_tgt = spreadsheet.worksheet(target_sheet_name)
+        is_used_sheet = True
+    else:
+        ws_tgt = get_ws(target_sheet_name)
+        is_used_sheet = False
 
-def move_item(source_ws, target_ws, item_name: str, jumlah: int, satuan: str,
-              source_display: str, target_display: str, qr_url:str):
-    """
-    Move 'jumlah' from source to target for the matching item (nama+satuan).
-    """
-    # 1) decrease from source
-    records = list_records(source_ws)
-    for idx, row in enumerate(records, start=2):
-        if row["Nama"] == item_name and row["Satuan"] == satuan:
-            current = int(row["Jumlah"])
-            if current < jumlah:
-                raise ValueError(f"Stok {item_name} tidak cukup di {source_display}. Sisa: {current}")
-            # decrease
-            new_qty = current - jumlah
-            if new_qty == 0:
-                source_ws.delete_rows(idx)
-            else:
-                source_ws.update_cell(idx, 2, new_qty)
-                source_ws.update_cell(idx, 5, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            # 2) upsert to target
-            upsert_item(
-                target_ws,
-                item_name,
-                jumlah,
-                satuan,
-                target_display,
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                qr_url
-            )
-            return
-    raise ValueError(f"Barang '{item_name}' ({satuan}) tidak ditemukan di {source_display}.")
+    # 2. Find Item in Source
+    records = list_records(ws_src)
+    match = next((r for r in records if r["Nama"] == item_name and r["Kondisi"] == kondisi), None)
+    
+    if not match:
+        raise ValueError(f"Item {item_name} ({kondisi}) tidak ada di {source_floor}")
 
-LOG_HEADERS = ["Item", "Action", "Jumlah", "Satuan", "Tempat Asal", "Tempat Tujuan", "Waktu", "QR_Code"]
+    actual_idx = records.index(match) + 2
+    current_qty = int(match["Jumlah"])
+
+    if current_qty < jumlah:
+        raise ValueError(f"Stok tidak cukup. Sisa: {current_qty}")
+
+    # 3. Update Source (Subtract or Delete)
+    if current_qty == jumlah:
+        ws_src.delete_rows(actual_idx)
+    else:
+        ws_src.update_cell(actual_idx, 7, current_qty - jumlah)
+
+    # 4. Build the New Row for Destination
+    target_records = ws_tgt.get_all_records()
+    next_no = int(target_records[-1].get("No", 0)) + 1 if target_records else 1
+
+    if is_used_sheet:
+        # --- 9 COLUMNS (No 'Tempat Penyimpanan') ---
+        new_row = [
+            next_no,
+            match["Kode Inventaris"],
+            item_name,
+            match["Tanggal Masuk"],   # Maps to 'Tanggal Digunakan'
+            match["Tahun Pembuatan"],
+            int(jumlah),              # Skips 'Tempat Penyimpanan'
+            kondisi,
+            petugas,
+            keterangan or f"Bekas dari {source_floor}"
+        ]
+    else:
+        # --- 10 COLUMNS (Standard Move between Floors) ---
+        new_row = [
+            next_no,
+            match["Kode Inventaris"],
+            item_name,
+            match["Tanggal Masuk"],
+            match["Tahun Pembuatan"],
+            target_sheet_name,        # Includes 'Tempat Penyimpanan'
+            int(jumlah),
+            kondisi,
+            petugas,
+            keterangan
+        ]
+
+    ws_tgt.append_row(new_row)
+    print(f"Berhasil! {item_name} dipindah ke {target_sheet_name}")
+
+# Updated Log Headers to match your 10-column structure
+LOG_HEADERS = [
+    "No", "Kode Inventaris", "Nama Barang", "Tanggal Masuk", 
+    "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", 
+    "Kondisi", "Petugas", "Keterangan"
+]
 
 def get_log_ws():
     """Return a worksheet for current month (create if not exists)."""
@@ -180,36 +226,37 @@ def get_log_ws():
     return ws
 
 
-def write_log(item, action, jumlah, satuan, tempat_asal="", tempat_tujuan="", qr_url=""):
-    """Append a new row to monthly log sheet."""
+def write_log(item_data, action, qty_used, petugas, keterangan=""):
     ws = get_log_ws()
+    
+    # ... (all your existing code to get next_no and display_location) ...
+
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Add IMAGE formula for QR code in last column
-    image_formula = f'=IMAGE("{qr_url}", 4, 100, 100)' if qr_url else ""
-    ws.append_row([item, action, jumlah, satuan, tempat_asal, tempat_tujuan, timestamp, image_formula])
+    log_row = [
+        next_no,
+        item_data.get("Kode Inventaris", "AUTO"),
+        item_data.get("Nama Barang", "Unknown"),
+        timestamp,
+        item_data.get("Tahun Pembuatan", "-"),
+        display_location,
+        qty_used,
+        item_data.get("Kondisi", "Baik"),
+        petugas,
+        f"[{action}] {keterangan}"
+    ]
+    
+    # 1. Write to Google Sheets Log
+    ws.append_row(log_row)
 
-
-def notify_gas_log(nama, jumlah, satuan, tempat, timestamp, qr_url=None):
-    GAS_URL = "https://script.google.com/macros/s/AKfycbwUL8BrggWowmOOAO20xV0TEYqwXhucSdYwxAU8ppZifj20uxJL83p1JXMk-bztVm-WeQ/exec"
-    payload = {
-        "nama": nama,
-        "jumlah": jumlah,
-        "satuan": satuan,
-        "tempat": tempat,
-        "timestamp": timestamp,
-        "qr_url": qr_url,
-    }
-
-    response = requests.post(GAS_URL, data=json.dumps(payload))
-    try:
-        result = response.json()
-        if result.get("status") == "success":
-            print("✅ Google Doc created:", result["doc_url"])
-        else:
-            print("❌ GAS Error:", result.get("message"))
-    except Exception as e:
-        print("❌ Response Error:", e, response.text)
+    # 2. Trigger Google Doc Creation (The "disappeared" function)
+    notify_gas_log(
+        nama=item_data.get("Nama Barang", "Unknown"),
+        jumlah=qty_used,
+        kondisi=item_data.get("Kondisi", "Baik"),
+        tempat=display_location,
+        timestamp=timestamp
+    )
 
 
 # =========================
@@ -299,159 +346,148 @@ div.stButton > button:hover {
 """, unsafe_allow_html=True)
 menu = st.selectbox(
     "Menu",
-    ["Tambahkan peralatan atau suku cadang", "Kurangi alat atau suku cadang", "Pindahkan Barang atau suku cadang", "Lihat Data"],
+    ["Tambahkan Inventori", "Menggunakan atau Mengirimkan barang", "Lihat Data"],
 )
 
-if menu == "Tambahkan peralatan atau suku cadang":
+if menu == "Tambahkan Inventori":
     st.subheader("➕ Tambah Barang + 📤 Upload Gambar")
     nama = st.text_input("Nama Barang")
     jumlah = st.number_input("Jumlah", min_value=1, step=1)
-    satuan = st.selectbox("Satuan", ["Meter", "kg", "liter", "buah"])
+    
+    # NEW: Manual Date Input
+    tanggal_input = st.date_input("Tanggal Masuk", datetime.now())
+    # Convert date to string format YYYY-MM-DD
+    tanggal_str = tanggal_input.strftime("%Y-%m-%d")
+
+    # Update Kondisi and Keterangan (Based on your new 10-column system)
+    kondisi = st.selectbox("Kondisi", ["Baik", "Rusak", "Perlu Perbaikan"])
+    keterangan = st.text_area("Keterangan", "Stok baru")
+    petugas = st.text_input("Nama Petugas")
+    
+    # Hidden Tahun Pembuatan (Optional: you can make this a text input too)
+    tahun_pembuatan = st.text_input("Tahun Pembuatan", "2024")
+    
     tempat_display = st.selectbox("Tempat", list(FLOOR_TO_SHEET.keys()))
-    gambar = st.file_uploader("📷 Upload Gambar Barang", type=["jpg", "jpeg", "png"])  # NEW
+    gambar = st.file_uploader("📷 Upload Gambar Barang", type=["jpg", "jpeg", "png"])
 
     if st.button("Simpan"):
-        if not nama:
-            st.error("Nama wajib diisi.")
-        elif not gambar:  # NEW RULE
+        if not nama or not petugas:
+            st.error("Nama Barang dan Petugas wajib diisi.")
+        elif not gambar:
             st.error("Wajib upload gambar barang.")
         else:
-            # Upload gambar ke Cloudinary
+            # Upload image to Cloudinary
             upload_result = cloudinary.uploader.upload(gambar, folder="inventory_items")
             image_url = upload_result["secure_url"]
-       # 2. Generate QR Code dari image_url
+
+            # QR Code Logic (Keeping your existing logic)
             qr = qrcode.make(image_url)
             buffer = BytesIO()
             qr.save(buffer, format="PNG")
             buffer.seek(0)
-
-        # Upload QR ke Cloudinary
             qr_upload = cloudinary.uploader.upload(
                 buffer,
                 folder="qr_codes",
                 public_id=f"qr_{nama}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
             )
+            qr_url = qr_upload["secure_url"]
+
+            ws = get_ws(tempat_display)
             
-        qr_url = qr_upload["secure_url"]
-        ws = get_ws(tempat_display)
-        upsert_item(
-            ws,
-            nama,
-            jumlah,
-            satuan,
-            tempat_display,
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            #image_url,
-            #,
-            qr_url,
-           f'=IMAGE("{qr_url}", 4, 100, 100)',
-        )    
-        write_log(
-        item=nama,
-        action="Menambahkan",
-        jumlah=jumlah,
-        satuan=satuan,
-        tempat_asal="-",
-        tempat_tujuan=tempat_display,
-        qr_url=qr_url,
-        )
-
-       # st.success("✅ Data berhasil disimpan / diperbarui.")
-       # st.image(image_url)
-       # st.write(f"🔗 [Lihat Gambar]({image_url})")
-
-       # st.success("✅ Data berhasil disimpan / diperbarui.")
-      #  st.image(img_url, caption="QR Code Barang", width=200)
-      #  st.success("✅ Data + QR berhasil disimpan ke Google Sheet!")
-
-        st.success("✅ Data berhasil disimpan / diperbarui.")
-        st.image(image_url, caption="📷 Gambar Barang", width=200)
-        st.image(qr_url, caption="📱 QR Code Barang", width=200)
-        st.write(f"🔗 [Lihat Gambar Barang]({image_url})")
-        st.write(f"🔗 [Lihat QR Code]({qr_url})")
-        
-elif menu == "Kurangi alat atau suku cadang":
-    st.subheader("➖ Kurangi Barang")
+            # --- CALL UPSERT WITH MANUAL DATE ---
+            upsert_item(
+                ws=ws,
+                nama_barang=nama,
+                tanggal_masuk=tanggal_str, # Use manual date
+                tahun_pembuatan=tahun_pembuatan,
+                tempat_penyimpanan=tempat_display,
+                jumlah=jumlah,
+                kondisi=kondisi,
+                petugas=petugas,
+                keterangan=keterangan
+            )
+            
+            st.success("✅ Data berhasil disimpan / diperbarui.")
+            st.image(image_url, caption="📷 Gambar Barang", width=200)
+            
+elif menu == "Menggunakan atau Mengirimkan barang":
+    st.subheader("➖ Kurangi Barang / Gunakan")
     tempat_display = st.selectbox("Gudang", list(FLOOR_TO_SHEET.keys()))
     nama = st.text_input("Nama Barang")
+    kondisi = st.selectbox("Kondisi Barang yang Diambil", ["Baik", "Rusak"])
     jumlah = st.number_input("Jumlah yang dikurangi", min_value=1, step=1)
-    satuan = st.selectbox("Satuan", ["Meter", "kg", "liter", "buah"])
+    
+    # NEW: Manual Date Input for Usage
+    tanggal_penggunaan = st.date_input("Tanggal Penggunaan", datetime.now())
+    tgl_pakai_str = tanggal_penggunaan.strftime("%Y-%m-%d")
+    
+    petugas = st.text_input("Petugas yang mengambil")
+
     if st.button("Kurangi"):
-        if not nama:
-            st.error("Nama wajib diisi.")
+        if not nama or not petugas:
+            st.error("Nama dan Petugas wajib diisi.")
         else:
             try:
-                ws = get_ws(tempat_display)
-                decrease_item(ws, nama, jumlah, satuan, tempat_display)
-                write_log(
-                item=nama,
-                action="Mengurangi",
-                jumlah=jumlah,
-                satuan=satuan,
-                tempat_asal=tempat_display,
-                tempat_tujuan="-"
-                )
-
-                st.success("✅ Stok berhasil dikurangi.")
-            except Exception as e:
-                st.error(str(e))
-
-elif menu == "Pindahkan Barang atau suku cadang":
-    st.subheader("🔄 Pindahkan Barang")
-
-    source_display = st.selectbox("Dari", list(FLOOR_TO_SHEET.keys()))
-    target_display = st.selectbox("Ke", list(FLOOR_TO_SHEET.keys()))
-    nama = st.text_input("Nama Barang")
-    jumlah = st.number_input("Jumlah yang dipindahkan", min_value=1, step=1)
-    satuan = st.selectbox("Satuan", ["Meter", "kg", "liter", "buah"])
-
-    if st.button("Pindahkan"):
-        if source_display == target_display:
-            st.error("Gudang asal dan tujuan tidak boleh sama.")
-        elif not nama:
-            st.error("Nama wajib diisi.")
-        else:
-            try:
-                source_ws = get_ws(source_display)
-                target_ws = get_ws(target_display)
-
-                # ✅ AMBIL QR LANGSUNG DARI SHEET
-                qr_url = get_qr_by_nama(source_ws, nama)
-
-                move_item(
-                    source_ws,
-                    target_ws,
-                    nama,
-                    jumlah,
-                    satuan,
-                    source_display,
-                    target_display,
-                    qr_url=qr_url
-                )
-
-                write_log(
-                    item=nama,
-                    action="Memindahkan",
+                # Use the transfer/cascade function we built earlier
+                transfer_item(
+                    source_floor=tempat_display,
+                    target_sheet_name="Barang Terpakai",
+                    item_name=nama,
+                    kondisi=kondisi,
                     jumlah=jumlah,
-                    satuan=satuan,
-                    tempat_asal=source_display,
-                    tempat_tujuan=target_display,
-                    qr_url=qr_url
+                    petugas=petugas,
+                    keterangan=f"Digunakan pada {tgl_pakai_str}" # Manual date in notes
                 )
-
-                st.success("✅ Barang berhasil dipindahkan.")
-                st.image(qr_url, caption="📱 QR Barang yang Dipindahkan", width=200)
-
+                st.success(f"✅ {jumlah} {nama} berhasil dipindahkan ke Barang Terpakai.")
             except Exception as e:
                 st.error(str(e))
-
                                            
 elif menu == "Lihat Data":
     st.subheader("📊 Data Gudang")
+    
+    # 1. Select the Floor/Warehouse
     tempat_display = st.selectbox("Pilih Gudang", list(FLOOR_TO_SHEET.keys()))
     ws = get_ws(tempat_display)
-    ensure_header(ws)
-    st.dataframe(ws.get_all_records(expected_headers=HEADERS))
+    
+    # 2. Get data and convert to Pandas DataFrame
+    data = ws.get_all_records(expected_headers=HEADERS)
+    df = pd.DataFrame(data)
+
+    if not df.empty:
+        # --- SEARCH UI ---
+        st.write("---")
+        col1, col2 = st.columns(2)
+        with col1:
+            search_nama = st.text_input("🔍 Cari Nama Barang", "")
+        with col2:
+            search_date = st.text_input("📅 Cari Tanggal (YYYY-MM-DD)", "")
+
+        # --- FILTERING LOGIC ---
+        filtered_df = df.copy()
+        if search_nama:
+            filtered_df = filtered_df[filtered_df['Nama Barang'].str.contains(search_nama, case=False, na=False)]
+        if search_date:
+            filtered_df = filtered_df[filtered_df['Tanggal Masuk'].str.contains(search_date, na=False)]
+
+        # --- HIGHLIGHTING FUNCTION ---
+        def style_rows(row):
+            """Apply colors based on the Kondisi column."""
+            kondisi = row["Kondisi"]
+            if kondisi == "Rusak":
+                return ['background-color: #ffcccc'] * len(row) # Light Red
+            elif kondisi == "Perlu Perbaikan":
+                return ['background-color: #fff4cc'] * len(row) # Light Yellow
+            return [''] * len(row)
+
+        # Apply the styling
+        styled_df = filtered_df.style.apply(style_rows, axis=1)
+
+        # --- DISPLAY RESULTS ---
+        st.write(f"Menampilkan {len(filtered_df)} data:")
+        st.dataframe(styled_df, use_container_width=True)
+        
+    else:
+        st.warning("Gudang ini masih kosong.")
 
 
 
