@@ -29,7 +29,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ]
 
-spreadsheet_id_1 = "16TyrN_dLzqCCPnc15K8REKxzGF4bbY6dZzU8QLzo1kA"
+spreadsheet_id_1 = "1jXn8ijgcqHyohvTOmwGVbZJjpeuGV5JDqz1igtd-CNo"
 FOLDER_ID = "1Nfz9wDdW6SjY_2eXY_crxWLZUTJFt_IX"
 LOG_SPREADSHEET_ID="1CBHd51k5_3XXvBJ093USsrkXXw5lPBLh6SjQIXdcKOA"
 
