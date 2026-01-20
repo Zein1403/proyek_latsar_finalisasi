@@ -526,14 +526,38 @@ elif menu == "Menggunakan atau Mengirimkan barang":
 elif menu == "Lihat Data":
     st.subheader("📊 Data Gudang")
     
-    # 1. Select the Floor/Warehouse
     tempat_display = st.selectbox("Pilih Gudang", list(FLOOR_TO_SHEET.keys()))
+    
+    # 1. Get the worksheet
     ws = get_ws(tempat_display)
     
-    # 2. Get data and convert to Pandas DataFrame
-    data = ws.get_all_records(expected_headers=HEADERS)
-    df = pd.DataFrame(data)
+    # 2. Get data SAFELY to avoid GSpreadException
+    try:
+        # We fetch raw values first (uses 1 API call)
+        raw_values = ws.get_all_values()
+        
+        if len(raw_values) > 1:
+            # Manually map the data to your HEADERS
+            # This avoids the "duplicate headers" error entirely
+            data_rows = raw_values[1:] # Skip the first row (actual sheet headers)
+            
+            # Create a list of dictionaries manually
+            clean_data = []
+            for row in data_rows:
+                # Pad row with empty strings if it's shorter than HEADERS
+                padded_row = row + [""] * (len(HEADERS) - len(row))
+                # Only take the first 10 columns
+                clean_data.append(dict(zip(HEADERS, padded_row[:10])))
+            
+            df = pd.DataFrame(clean_data)
+        else:
+            df = pd.DataFrame(columns=HEADERS) # Empty DataFrame with correct columns
 
+    except Exception as e:
+        st.error(f"Gagal mengambil data: {e}")
+        df = pd.DataFrame(columns=HEADERS)
+
+    # 3. Filtering and Display (Only if df has data)
     if not df.empty:
         # --- SEARCH UI ---
         st.write("---")
@@ -543,32 +567,28 @@ elif menu == "Lihat Data":
         with col2:
             search_date = st.text_input("📅 Cari Tanggal (YYYY-MM-DD)", "")
 
-        # --- FILTERING LOGIC ---
+        # Filtering
         filtered_df = df.copy()
         if search_nama:
-            filtered_df = filtered_df[filtered_df['Nama Barang'].str.contains(search_nama, case=False, na=False)]
+            filtered_df = filtered_df[filtered_df['Nama Barang'].astype(str).str.contains(search_nama, case=False, na=False)]
         if search_date:
-            filtered_df = filtered_df[filtered_df['Tanggal Masuk'].str.contains(search_date, na=False)]
+            filtered_df = filtered_df[filtered_df['Tanggal Masuk'].astype(str).str.contains(search_date, na=False)]
 
-        # --- HIGHLIGHTING FUNCTION ---
+        # --- HIGHLIGHTING ---
         def style_rows(row):
-            """Apply colors based on the Kondisi column."""
-            kondisi = row["Kondisi"]
+            kondisi = str(row["Kondisi"])
             if kondisi == "Rusak":
-                return ['background-color: #ffcccc'] * len(row) # Light Red
+                return ['background-color: #ffcccc'] * len(row)
             elif kondisi == "Perlu Perbaikan":
-                return ['background-color: #fff4cc'] * len(row) # Light Yellow
+                return ['background-color: #fff4cc'] * len(row)
             return [''] * len(row)
 
-        # Apply the styling
         styled_df = filtered_df.style.apply(style_rows, axis=1)
-
-        # --- DISPLAY RESULTS ---
         st.write(f"Menampilkan {len(filtered_df)} data:")
         st.dataframe(styled_df, use_container_width=True)
         
     else:
-        st.warning("Gudang ini masih kosong.")
+        st.warning("Gudang ini masih kosong atau data tidak valid.")
 
 
 
