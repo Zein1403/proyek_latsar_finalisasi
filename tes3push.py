@@ -164,7 +164,7 @@ def transfer_item(source_floor: str, target_sheet_name: str, item_name: str,
     ws_src = get_ws(source_floor)
     
     # 1. Identify Target Worksheet
-    if target_sheet_name == "Barang Terpakai":
+    if target_sheet_name == "Data Barang yang Dikirim atau Digunakan":
         ws_tgt = spreadsheet.worksheet(target_sheet_name)
         is_used_sheet = True
     else:
