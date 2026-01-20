@@ -256,7 +256,7 @@ def get_log_ws():
         ws = log_spreadsheet.worksheet(sheet_name)
     except:
         ws = log_spreadsheet.add_worksheet(title=sheet_name, rows=100, cols=len(LOG_HEADERS))
-        ws.update("A1:H1", [LOG_HEADERS])
+        ws.update("A1:J1", [LOG_HEADERS])
     return ws
 
 
