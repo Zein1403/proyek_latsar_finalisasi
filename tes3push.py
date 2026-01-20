@@ -487,13 +487,29 @@ if menu == "Tambahkan Inventori":
             
             st.success("✅ Data berhasil disimpan / diperbarui.")
             st.image(image_url, caption="📷 Gambar Barang", width=200)
+            # 4. PREPARE THE DATA FOR LOG (The Fix)
+            # This creates the variable that Python was complaining about
+            item_data_for_log = {
+                "Kode Inventaris": "AUTO",  # Or your logic for generated code
+                "Nama Barang": nama,
+                "Tahun Pembuatan": tahun_pembuatan,
+                "Tempat Penyimpanan": tempat_display,
+                "Kondisi": kondisi
+            }
+
+            # 5. Write to Log Sheet & Trigger GAS
             write_log(
-        item_data=item_data_for_log, 
-        action="TAMBAH", 
-        qty_used=jumlah, 
-        petugas=petugas, 
-        keterangan=keterangan
-    )
+                item_data=item_data_for_log, 
+                action="TAMBAH", 
+                qty_used=jumlah, 
+                petugas=petugas, 
+                keterangan=keterangan
+            )
+
+            # 6. UI Feedback
+            st.success("✅ Data berhasil disimpan dan dicatat di Log.")
+            st.image(image_url, caption="📷 Gambar Barang", width=200)
+            st.image(qr_url, caption="📱 QR Code Barang", width=200)
 
     st.success("✅ Data berhasil disimpan dan dicatat di Log.")
             
