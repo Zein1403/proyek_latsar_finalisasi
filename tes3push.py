@@ -605,9 +605,16 @@ elif menu == "Lihat Data":
             filter_kondisi = st.selectbox("🛠️ Kondisi", conditions)
 
         with row2_col3:
-            # Dropdown for Petugas
-            staff = ["Semua"] + sorted(df["Petugas"].unique().tolist())
-            filter_petugas = st.selectbox("👤 Petugas", staff)
+            # 1. Get raw names, convert to strings, and drop empty ones
+            raw_staff = df["Petugas"].astype(str).dropna().tolist()
+            
+            # 2. Normalize: Strip spaces and capitalize only the first letter (Title Case)
+            
+            normalized_staff = sorted(list(set([name.strip().title() for name in raw_staff if name.strip()])))
+            
+            # 3. Create the dropdown
+            staff_options = ["Semua"] + normalized_staff
+            filter_petugas = st.selectbox("👤 Petugas", staff_options)
 
         # Filtering
         # Start with a copy of the dataframe
@@ -627,8 +634,12 @@ elif menu == "Lihat Data":
         if filter_kondisi != "Semua":
             filtered_df = filtered_df[filtered_df['Kondisi'] == filter_kondisi]
 
+        # --- DROPDOWN FILTERS ---
         if filter_petugas != "Semua":
-            filtered_df = filtered_df[filtered_df['Petugas'] == filter_petugas]
+            # Compare lowercase of both sides to catch every variation
+            filtered_df = filtered_df[
+                filtered_df['Petugas'].astype(str).str.strip().str.lower() == filter_petugas.lower()
+            ]
 
         # --- HIGHLIGHTING ---
         def style_rows(row):
