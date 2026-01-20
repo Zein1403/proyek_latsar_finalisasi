@@ -568,9 +568,9 @@ elif menu == "Lihat Data":
             clean_data = []
             for row in data_rows:
                 # Pad row with empty strings if it's shorter than HEADERS
-                padded_row = row + [""] * (len(HEADERS) - len(row))
+                padded_row = row + [""] * (len(active_headers) - len(row))
                 # Only take the first 10 columns
-                clean_data.append(dict(zip(HEADERS, padded_row[:10])))
+                clean_data.append(dict(zip(active_headers, padded_row[:len(active_headers)])))
             
             df = pd.DataFrame(clean_data)
         else:
@@ -578,7 +578,7 @@ elif menu == "Lihat Data":
 
     except Exception as e:
         st.error(f"Gagal mengambil data: {e}")
-        df = pd.DataFrame(columns=HEADERS)
+       df = pd.DataFrame(columns=active_headers)
 
     # 3. Filtering and Display (Only if df has data)
     if not df.empty:
