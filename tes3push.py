@@ -578,7 +578,7 @@ elif menu == "Lihat Data":
 
     except Exception as e:
         st.error(f"Gagal mengambil data: {e}")
-       df = pd.DataFrame(columns=active_headers)
+        df = pd.DataFrame(columns=active_headers)
 
     # 3. Filtering and Display (Only if df has data)
     if not df.empty:
