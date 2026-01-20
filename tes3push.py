@@ -79,7 +79,11 @@ def ensure_header(ws):
     first_row = ws.row_values(1)
     if first_row != HEADERS:
         ws.update("A1:J1", [HEADERS])
-
+        
+def get_ws(floor_display_name):
+    """Now defined BEFORE it is called."""
+    sheet_name = FLOOR_TO_SHEET[floor_display_name]
+    return spreadsheet.worksheet(sheet_name)
 
 def list_records(ws):
     """Return rows as list[dict] with forced headers."""
