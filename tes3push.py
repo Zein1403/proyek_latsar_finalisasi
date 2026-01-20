@@ -247,43 +247,53 @@ LOG_HEADERS = [
     "Kondisi", "Petugas", "Keterangan"
 ]
 
-def get_log_ws():
-    """Return a worksheet for current month (create if not exists)."""
-    month_tag = datetime.now().strftime("%Y_%m")  # e.g. "2025_10"
-    sheet_name = f"Log_{month_tag}"
-
-    try:
-        ws = log_spreadsheet.worksheet(sheet_name)
-    except:
-        ws = log_spreadsheet.add_worksheet(title=sheet_name, rows=100, cols=len(LOG_HEADERS))
-        ws.update("A1:J1", [LOG_HEADERS])
-    return ws
-
-
 def write_log(item_data, action, qty_used, petugas, keterangan=""):
+    """
+    item_data: a dictionary or row object containing the original item details.
+    action: 'ADD', 'TRANSFER', or 'USE'
+    """
     ws = get_log_ws()
     
-    # ... (all your existing code to get next_no and display_location) ...
-
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    log_row = [
-        next_no,
-        item_data.get("Kode Inventaris", "AUTO"),
-        item_data.get("Nama Barang", "Unknown"),
-        timestamp,
-        item_data.get("Tahun Pembuatan", "-"),
-        display_location,
-        qty_used,
-        item_data.get("Kondisi", "Baik"),
-        petugas,
-        f"[{action}] {keterangan}"
-    ]
+    # --- 1. Calculate next_no (THE FIX) ---
+    records = ws.get_all_records()
+    if not records:
+        next_no = 1
+    else:
+        try:
+            # Get 'No' from the last row and add 1
+            last_no = int(records[-1].get("No", 0))
+            next_no = last_no + 1
+        except (ValueError, TypeError):
+            # Fallback if the last row's 'No' is not a valid number
+            next_no = len(records) + 1
     
-    # 1. Write to Google Sheets Log
-    ws.append_row(log_row)
+    # --- 2. Logic for "Tempat Penyimpanan" ---
+    if action.upper() in ["USE", "DIGUNAKAN", "USED"]:
+        display_location = "--- DIGUNAKAN ---"
+    else:
+        # Get location from item_data, fallback to 'Inventory'
+        display_location = item_data.get("Tempat Penyimpanan", "Inventory")
 
-    # 2. Trigger Google Doc Creation (The "disappeared" function)
+    # --- 3. Build the 10-Column Row ---
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    log_row = [
+        next_no,                                            # Col 1: No
+        item_data.get("Kode Inventaris", "AUTO"),           # Col 2
+        item_data.get("Nama Barang", "Unknown"),            # Col 3
+        timestamp,                                          # Col 4: Tanggal (Waktu Log)
+        item_data.get("Tahun Pembuatan", "-"),              # Col 5
+        display_location,                                   # Col 6: Tempat
+        qty_used,                                           # Col 7: Jumlah
+        item_data.get("Kondisi", "Baik"),                   # Col 8
+        petugas,                                            # Col 9
+        f"[{action}] {keterangan}"                          # Col 10: Keterangan
+    ]
+
+    # --- 4. Write and Notify ---
+    ws.append_row(log_row)
+    
+    # Trigger your Google Doc creation
     notify_gas_log(
         nama=item_data.get("Nama Barang", "Unknown"),
         jumlah=qty_used,
