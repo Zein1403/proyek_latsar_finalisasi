@@ -465,7 +465,7 @@ elif menu == "Menggunakan atau Mengirimkan barang":
                 # Use the transfer/cascade function we built earlier
                 transfer_item(
                     source_floor=tempat_display,
-                    target_sheet_name="Barang Terpakai",
+                    target_sheet_name="Data Barang yang Dikirim atau Digunakan",
                     item_name=nama,
                     kondisi=kondisi,
                     jumlah=jumlah,
