@@ -60,10 +60,6 @@ drive_service = build("drive", "v3", credentials=creds)
 spreadsheet = gs_client.open_by_key(SPREADSHEET_ID)
 log_spreadsheet = gs_client.open_by_key(LOG_SPREADSHEET_ID)
 
-# Add this temporary line to see all available tab names
-all_tabs = [sheet.title for sheet in spreadsheet.worksheets()]
-st.write("Daftar Tab yang ditemukan Python:", all_tabs)
-
 # Map display names -> worksheet names
 FLOOR_TO_SHEET = {
     "Penambahan Inventaris" : "Data Inventaris Informasi Kualitas Udara BMKG PUSAT" ,
