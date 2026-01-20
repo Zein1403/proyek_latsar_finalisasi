@@ -62,7 +62,7 @@ log_spreadsheet = gs_client.open_by_key(LOG_SPREADSHEET_ID)
 
 # Map display names -> worksheet names
 FLOOR_TO_SHEET = {
-    "Stamet Kemayoran" : "Data Inventaris Informasi Kualitas Udara BMKG PUSAT" ,
+    "Penambahan Inventaris" : "Data Inventaris Informasi Kualitas Udara BMKG PUSAT" ,
     "Penggunaan Inventaris" : "Data Barang yang Dikirim atau Digunakan",
 }
 
@@ -516,7 +516,7 @@ elif menu == "Menggunakan atau Mengirimkan barang":
     st.subheader("➖ Kurangi Barang")
     
     # 1. Define all necessary inputs for this specific menu
-    tempat_display = st.selectbox("Dari", list(FLOOR_TO_SHEET.keys()))
+    tempat_display = st.selectbox("Gudang Asal", list(FLOOR_TO_SHEET.keys()))
     nama = st.text_input("Nama Barang yang Diambil")
     kondisi = st.selectbox("Kondisi Barang", ["Baik", "Rusak"])
     jumlah = st.number_input("Jumlah", min_value=1)
@@ -608,7 +608,6 @@ elif menu == "Lihat Data":
         
     else:
         st.warning("Gudang ini masih kosong atau data tidak valid.")
-
 
 
 
