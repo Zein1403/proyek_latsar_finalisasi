@@ -512,7 +512,7 @@ if menu == "Tambahkan Inventori":
             st.image(qr_url, caption="📱 QR Code Barang", width=200)
 
     st.success("✅ Data berhasil disimpan dan dicatat di Log.")
- elif menu == "Menggunakan atau Mengirimkan barang":
+elif menu == "Menggunakan atau Mengirimkan barang":
     # ... existing inputs (Gudang, Nama, Kondisi, Jumlah) ...
     
     # ADD THIS: Manual Input for Keterangan
