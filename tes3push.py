@@ -69,9 +69,8 @@ SOURCE_FLOOR = "Penambahan Inventaris"
 DESTINATION_SHEET = "Penggunaan Inventaris"
 
 
-HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Masuk", 
-           "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", "Kondisi", "Petugas". "keterangan"
-           ]
+LOG_HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Masuk", 
+               "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", "Kondisi", "Petugas", "keterangan"]
 
 
 
