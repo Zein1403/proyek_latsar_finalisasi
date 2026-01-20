@@ -550,7 +550,7 @@ elif menu == "Lihat Data":
     # 1. Get the worksheet
     ws = get_ws(tempat_display)
     
-    if "Terpakai" in tempat_display or "Dikirim" in tempat_display:
+    if "Penggunaan Inventaris" in tempat_display or "Dikirim" in tempat_display:
         active_headers = HEADERS_USED # Ensure this is your 9-column list
     else:
         active_headers = HEADERS      # Your standard 10-column list
