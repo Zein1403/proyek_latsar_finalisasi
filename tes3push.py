@@ -487,6 +487,15 @@ if menu == "Tambahkan Inventori":
             
             st.success("✅ Data berhasil disimpan / diperbarui.")
             st.image(image_url, caption="📷 Gambar Barang", width=200)
+            write_log(
+        item_data=item_data_for_log, 
+        action="TAMBAH", 
+        qty_used=jumlah, 
+        petugas=petugas, 
+        keterangan=keterangan
+    )
+
+    st.success("✅ Data berhasil disimpan dan dicatat di Log.")
             
 elif menu == "Menggunakan atau Mengirimkan barang":
     st.subheader("➖ Kurangi Barang / Gunakan")
@@ -519,6 +528,17 @@ elif menu == "Menggunakan atau Mengirimkan barang":
                 st.success(f"✅ {jumlah} {nama} berhasil dipindahkan ke Barang Terpakai.")
             except Exception as e:
                 st.error(str(e))
+                write_log(
+            item_data=item_info, 
+            action="USE", # This triggers the '--- DIGUNAKAN ---' label in your log
+            qty_used=jumlah, 
+            petugas=petugas, 
+            keterangan=f"Diambil dari {tempat_display}"
+        )
+
+        st.success(f"✅ Stok berhasil dikurangi dan dicatat di Log.")
+    except Exception as e:
+        st.error(str(e))
                                            
 elif menu == "Lihat Data":
     st.subheader("📊 Data Gudang")
