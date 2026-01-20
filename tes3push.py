@@ -513,33 +513,34 @@ if menu == "Tambahkan Inventori":
 
     st.success("✅ Data berhasil disimpan dan dicatat di Log.")
 elif menu == "Menggunakan atau Mengirimkan barang":
-    # ... existing inputs (Gudang, Nama, Kondisi, Jumlah) ...
+    st.subheader("➖ Kurangi Barang")
     
-    # ADD THIS: Manual Input for Keterangan
-    keterangan_manual = st.text_area("Keterangan / Alasan Penggunaan", "Digunakan untuk...")
+    # 1. Define all necessary inputs for this specific menu
+    tempat_display = st.selectbox("Gudang Asal", list(FLOOR_TO_SHEET.keys()))
+    nama = st.text_input("Nama Barang yang Diambil")
+    kondisi = st.selectbox("Kondisi Barang", ["Baik", "Rusak"])
+    jumlah = st.number_input("Jumlah", min_value=1)
     
-    petugas = st.text_input("Petugas yang mengambil")
+    # ADDED: Manual Keterangan for this menu
+    keterangan_pakai = st.text_area("Keterangan / Alasan (Manual)", "Untuk keperluan...")
+    
+    petugas = st.text_input("Petugas yang Mengambil")
 
     if st.button("Kurangi"):
-        if not nama or not petugas:
-            st.error("Nama dan Petugas wajib diisi.")
-        else:
-            try:
-                # 1. Process Transfer
-                # This function calls write_log inside it, so we pass the manual text
-                transfer_item(
-                    source_floor=tempat_display,
-                    target_sheet_name="Data Barang yang Dikirim atau Digunakan",
-                    item_name=nama,
-                    kondisi=kondisi,
-                    jumlah=jumlah,
-                    petugas=petugas,
-                    keterangan=keterangan_manual # Use the manual input variable here
-                )
-                
-                st.success(f"✅ Berhasil dicatat: {keterangan_manual}")
-            except Exception as e:
-                st.error(str(e))
+        # 2. Pass the manual keterangan into the transfer function
+        try:
+            transfer_item(
+                source_floor=tempat_display,
+                target_sheet_name="Data Barang yang Dikirim atau Digunakan",
+                item_name=nama,
+                kondisi=kondisi,
+                jumlah=jumlah,
+                petugas=petugas,
+                keterangan=keterangan_pakai # This ensures it's not missing!
+            )
+            st.success("✅ Log penggunaan berhasil dicatat.")
+        except Exception as e:
+            st.error(f"Error: {e}")
                                            
 elif menu == "Lihat Data":
     st.subheader("📊 Data Gudang")
