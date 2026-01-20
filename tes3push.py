@@ -81,9 +81,18 @@ def ensure_header(ws):
         ws.update("A1:J1", [HEADERS])
         
 def get_ws(floor_display_name):
-    """Now defined BEFORE it is called."""
-    sheet_name = FLOOR_TO_SHEET[floor_display_name]
-    return spreadsheet.worksheet(sheet_name)
+    """Modified with safety check to catch naming errors."""
+    try:
+        # Get the internal sheet name from your dictionary
+        sheet_name = FLOOR_TO_SHEET[floor_display_name]
+        return spreadsheet.worksheet(sheet_name)
+    except KeyError:
+        st.error(f"❌ Key '{floor_display_name}' tidak ada di FLOOR_TO_SHEET.")
+        st.stop()
+    except gspread.exceptions.WorksheetNotFound:
+        st.error(f"❌ Tab bernama '{sheet_name}' tidak ditemukan di Google Sheets Anda.")
+        st.info("Pastikan nama tab di Google Sheets sama persis dengan yang ada di FLOOR_TO_SHEET.")
+        st.stop()
 
 def list_records(ws):
     """Return rows as list[dict] with forced headers."""
