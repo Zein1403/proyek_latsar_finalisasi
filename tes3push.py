@@ -321,7 +321,7 @@ def write_log(item_data, action, qty_used, petugas, keterangan=""):
         qty_used,                                           # Col 7: Jumlah
         item_data.get("Kondisi", "Baik"),                   # Col 8
         petugas,                                            # Col 9
-        f"[{action}] {keterangan}"                          # Col 10: Keterangan
+        keterangan                                          # Col 10: Keterangan
     ]
 
     # --- 4. Write and Notify ---
