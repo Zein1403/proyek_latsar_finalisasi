@@ -549,7 +549,12 @@ elif menu == "Lihat Data":
     
     # 1. Get the worksheet
     ws = get_ws(tempat_display)
-    
+    # --- ADD THIS: Choose the correct header based on the sheet name ---
+    if "Terpakai" in tempat_display or "Dikirim" in tempat_display:
+        current_headers = HEADERS_USED # The 9-column list
+    else:
+        current_headers = HEADERS      # The 10-column list
+    # ------------------------------------------------------------------
     # 2. Get data SAFELY to avoid GSpreadException
     try:
         # We fetch raw values first (uses 1 API call)
