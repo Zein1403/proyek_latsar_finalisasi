@@ -72,6 +72,9 @@ FLOOR_TO_SHEET = {
 SOURCE_FLOOR = "Data Inventaris Informasi Kualitas Udara BMKG PUSAT"         
 DESTINATION_SHEET = "Data Barang yang Dikirim atau Digunakan"
 
+HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Masuk", 
+           "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", 
+           "Kondisi", "Petugas", "keterangan"]
 
 LOG_HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Masuk", 
                "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", "Kondisi", "Petugas", "keterangan"]
