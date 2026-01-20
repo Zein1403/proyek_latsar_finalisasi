@@ -486,9 +486,7 @@ if menu == "Tambahkan Inventori":
                 petugas=petugas,
                 keterangan=keterangan
             )
-            
-            st.success("✅ Data berhasil disimpan / diperbarui.")
-            st.image(image_url, caption="📷 Gambar Barang", width=200)
+           
             # 4. PREPARE THE DATA FOR LOG (The Fix)
             # This creates the variable that Python was complaining about
             item_data_for_log = {
