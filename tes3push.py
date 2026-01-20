@@ -133,7 +133,7 @@ def upsert_item(ws, nama_barang: str, tanggal_masuk: str,
     # 2. Match Check: Nama Barang + Tanggal Masuk + KONDISI
     # If all three match, we just add the quantity.
     for idx, row in enumerate(records, start=2):
-        if (row["Nama Barang"] == nama_barang and 
+        if (row["Nama Barang"].strip().lower() == nama_barang.strip().lower() and
             str(row["Tanggal Masuk"]) == str(tanggal_masuk) and
             row["Kondisi"] == kondisi): # <--- New condition check
             
@@ -182,7 +182,9 @@ def transfer_item(source_floor: str, target_sheet_name: str, item_name: str,
     records = list_records(ws_src)
     
     # FIX: Changed r["Nama"] to r["Nama Barang"] to match your HEADERS
-    match = next((r for r in records if r["Nama Barang"] == item_name and r["Kondisi"] == kondisi), None)
+    match = next((r for r in records if 
+              str(r["Nama Barang"]).strip().lower() == str(item_name).strip().lower() and 
+              r["Kondisi"] == kondisi), None)
     
     if not match:
         raise ValueError(f"Item {item_name} ({kondisi}) tidak ada di {source_floor}")
