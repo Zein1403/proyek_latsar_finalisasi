@@ -246,7 +246,19 @@ LOG_HEADERS = [
     "Tahun Pembuatan", "Tempat Penyimpanan", "Jumlah", 
     "Kondisi", "Petugas", "Keterangan"
 ]
+def get_log_ws():
+    """Return a worksheet for current month (create if not exists)."""
+    month_tag = datetime.now().strftime("%Y_%m")
+    sheet_name = f"Log_{month_tag}"
 
+    try:
+        ws = log_spreadsheet.worksheet(sheet_name)
+    except:
+        # Ensure cols=10 to match your 10-column HEADERS
+        ws = log_spreadsheet.add_worksheet(title=sheet_name, rows=1000, cols=10)
+        # Fix the range to A1:J1 (10 columns)
+        ws.update("A1:J1", [LOG_HEADERS])
+    return ws
 def write_log(item_data, action, qty_used, petugas, keterangan=""):
     """
     item_data: a dictionary or row object containing the original item details.
