@@ -511,7 +511,7 @@ if menu == "Tambahkan Inventori":
             st.image(image_url, caption="📷 Gambar Barang", width=200)
             st.image(qr_url, caption="📱 QR Code Barang", width=200)
 
-    st.success("✅ Data berhasil disimpan dan dicatat di Log.")
+  
 elif menu == "Menggunakan atau Mengirimkan barang":
     st.subheader("➖ Kurangi Barang")
     
