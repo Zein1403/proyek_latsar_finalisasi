@@ -173,11 +173,14 @@ def transfer_item(source_floor: str, target_sheet_name: str, item_name: str,
 
     # 2. Find Item in Source
     records = list_records(ws_src)
-    match = next((r for r in records if r["Nama"] == item_name and r["Kondisi"] == kondisi), None)
+    
+    # FIX: Changed r["Nama"] to r["Nama Barang"] to match your HEADERS
+    match = next((r for r in records if r["Nama Barang"] == item_name and r["Kondisi"] == kondisi), None)
     
     if not match:
         raise ValueError(f"Item {item_name} ({kondisi}) tidak ada di {source_floor}")
 
+    # Indexing logic (records.index(match) + 2 accounts for header row)
     actual_idx = records.index(match) + 2
     current_qty = int(match["Jumlah"])
 
@@ -188,34 +191,41 @@ def transfer_item(source_floor: str, target_sheet_name: str, item_name: str,
     if current_qty == jumlah:
         ws_src.delete_rows(actual_idx)
     else:
+        # Col 7 is 'Jumlah'
         ws_src.update_cell(actual_idx, 7, current_qty - jumlah)
 
     # 4. Build the New Row for Destination
     target_records = ws_tgt.get_all_records()
-    next_no = int(target_records[-1].get("No", 0)) + 1 if target_records else 1
+    
+    # Safe logic for next No
+    if not target_records:
+        next_no = 1
+    else:
+        try:
+            next_no = int(target_records[-1].get("No", 0)) + 1
+        except:
+            next_no = len(target_records) + 1
 
     if is_used_sheet:
-        # --- 9 COLUMNS (No 'Tempat Penyimpanan') ---
-        new_row = [
-            next_no,
-            match["Kode Inventaris"],
-            item_name,
-            match["Tanggal Masuk"],   # Maps to 'Tanggal Digunakan'
-            match["Tahun Pembuatan"],
-            int(jumlah),              # Skips 'Tempat Penyimpanan'
-            kondisi,
-            petugas,
-            keterangan or f"Bekas dari {source_floor}"
-        ]
-    else:
-        # --- 10 COLUMNS (Standard Move between Floors) ---
         new_row = [
             next_no,
             match["Kode Inventaris"],
             item_name,
             match["Tanggal Masuk"],
             match["Tahun Pembuatan"],
-            target_sheet_name,        # Includes 'Tempat Penyimpanan'
+            int(jumlah),
+            kondisi,
+            petugas,
+            keterangan or f"Bekas dari {source_floor}"
+        ]
+    else:
+        new_row = [
+            next_no,
+            match["Kode Inventaris"],
+            item_name,
+            match["Tanggal Masuk"],
+            match["Tahun Pembuatan"],
+            target_sheet_name,
             int(jumlah),
             kondisi,
             petugas,
@@ -223,6 +233,11 @@ def transfer_item(source_floor: str, target_sheet_name: str, item_name: str,
         ]
 
     ws_tgt.append_row(new_row)
+    
+    # 5. LOGGING
+    # Call write_log here to ensure history is recorded
+    write_log(match, "TRANSFER", jumlah, petugas, keterangan)
+    
     print(f"Berhasil! {item_name} dipindah ke {target_sheet_name}")
 
 # Updated Log Headers to match your 10-column structure
