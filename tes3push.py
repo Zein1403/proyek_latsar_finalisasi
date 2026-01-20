@@ -82,9 +82,19 @@ LOG_HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Masuk",
 
 
 def ensure_header(ws):
-    """Ensure the header row is exactly HEADERS."""
-    first_row = ws.row_values(1)
-    if first_row != HEADERS:
+    """Force the header row to be exactly HEADERS to avoid duplicates error."""
+    try:
+        # We read the first row to check
+        current_first_row = ws.row_values(1)
+        
+        # If the length is different or the values don't match exactly
+        if current_first_row != HEADERS:
+            # Clear the first row first to be safe
+            ws.update("A1:J1", [[""] * len(HEADERS)]) 
+            # Write the correct headers
+            ws.update("A1:J1", [HEADERS])
+    except Exception as e:
+        # Fallback: just try to overwrite it
         ws.update("A1:J1", [HEADERS])
         
 def get_ws(floor_display_name):
