@@ -445,7 +445,7 @@ if menu == "Tambahkan Inventori":
     # Hidden Tahun Pembuatan (Optional: you can make this a text input too)
     tahun_pembuatan = st.text_input("Tahun Pembuatan", "2024")
     
-    tempat_display = st.selectbox("Tempat", list(FLOOR_TO_SHEET.keys()))
+    tempat_display = "Penambahan Inventaris"
     gambar = st.file_uploader("📷 Upload Gambar Barang", type=["jpg", "jpeg", "png"])
 
     if st.button("Simpan"):
