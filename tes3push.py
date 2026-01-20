@@ -512,17 +512,11 @@ if menu == "Tambahkan Inventori":
             st.image(qr_url, caption="📱 QR Code Barang", width=200)
 
     st.success("✅ Data berhasil disimpan dan dicatat di Log.")
-            
-elif menu == "Menggunakan atau Mengirimkan barang":
-    st.subheader("➖ Kurangi Barang / Gunakan")
-    tempat_display = st.selectbox("Gudang", list(FLOOR_TO_SHEET.keys()))
-    nama = st.text_input("Nama Barang")
-    kondisi = st.selectbox("Kondisi Barang yang Diambil", ["Baik", "Rusak"])
-    jumlah = st.number_input("Jumlah yang dikurangi", min_value=1, step=1)
+ elif menu == "Menggunakan atau Mengirimkan barang":
+    # ... existing inputs (Gudang, Nama, Kondisi, Jumlah) ...
     
-    # NEW: Manual Date Input for Usage
-    tanggal_penggunaan = st.date_input("Tanggal Penggunaan", datetime.now())
-    tgl_pakai_str = tanggal_penggunaan.strftime("%Y-%m-%d")
+    # ADD THIS: Manual Input for Keterangan
+    keterangan_manual = st.text_area("Keterangan / Alasan Penggunaan", "Digunakan untuk...")
     
     petugas = st.text_input("Petugas yang mengambil")
 
@@ -531,7 +525,8 @@ elif menu == "Menggunakan atau Mengirimkan barang":
             st.error("Nama dan Petugas wajib diisi.")
         else:
             try:
-                # Use the transfer/cascade function we built earlier
+                # 1. Process Transfer
+                # This function calls write_log inside it, so we pass the manual text
                 transfer_item(
                     source_floor=tempat_display,
                     target_sheet_name="Data Barang yang Dikirim atau Digunakan",
@@ -539,12 +534,12 @@ elif menu == "Menggunakan atau Mengirimkan barang":
                     kondisi=kondisi,
                     jumlah=jumlah,
                     petugas=petugas,
-                    keterangan=f"Digunakan pada {tgl_pakai_str}" # Manual date in notes
+                    keterangan=keterangan_manual # Use the manual input variable here
                 )
-                st.success(f"✅ {jumlah} {nama} berhasil dipindahkan ke Barang Terpakai.")
+                
+                st.success(f"✅ Berhasil dicatat: {keterangan_manual}")
             except Exception as e:
                 st.error(str(e))
-           
                                            
 elif menu == "Lihat Data":
     st.subheader("📊 Data Gudang")
