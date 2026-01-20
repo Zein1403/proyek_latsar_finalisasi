@@ -584,18 +584,51 @@ elif menu == "Lihat Data":
     if not df.empty:
         # --- SEARCH UI ---
         st.write("---")
-        col1, col2 = st.columns(2)
-        with col1:
+        # Creating three columns for better layout
+        row1_col1, row1_col2 = st.columns(2)
+        row2_col1, row2_col2, row2_col3 = st.columns(3)
+
+        with row1_col1:
             search_nama = st.text_input("🔍 Cari Nama Barang", "")
-        with col2:
-            search_date = st.text_input("📅 Cari Tanggal (YYYY-MM-DD)", "")
+        with row1_col2:
+            date_col = "Tanggal" if "Tanggal" in df.columns else "Tanggal Masuk"
+            search_date = st.text_input(f"📅 Cari {date_col} (YYYY-MM-DD)", "")
+
+        with row2_col1:
+            # Dropdown for Tahun Pembuatan
+            years = ["Semua"] + sorted(df["Tahun Pembuatan"].unique().tolist())
+            filter_year = st.selectbox("📅 Tahun Pembuatan", years)
+
+        with row2_col2:
+            # Dropdown for Kondisi
+            conditions = ["Semua"] + sorted(df["Kondisi"].unique().tolist())
+            filter_kondisi = st.selectbox("🛠️ Kondisi", conditions)
+
+        with row2_col3:
+            # Dropdown for Petugas
+            staff = ["Semua"] + sorted(df["Petugas"].unique().tolist())
+            filter_petugas = st.selectbox("👤 Petugas", staff)
 
         # Filtering
+        # Start with a copy of the dataframe
         filtered_df = df.copy()
+
+        # Text filters (already existing)
         if search_nama:
             filtered_df = filtered_df[filtered_df['Nama Barang'].astype(str).str.contains(search_nama, case=False, na=False)]
+        
         if search_date:
-            filtered_df = filtered_df[filtered_df['Tanggal Masuk'].astype(str).str.contains(search_date, na=False)]
+            filtered_df = filtered_df[filtered_df[date_col].astype(str).str.contains(search_date, na=False)]
+
+        # --- NEW DROPDOWN FILTERS ---
+        if filter_year != "Semua":
+            filtered_df = filtered_df[filtered_df['Tahun Pembuatan'].astype(str) == str(filter_year)]
+
+        if filter_kondisi != "Semua":
+            filtered_df = filtered_df[filtered_df['Kondisi'] == filter_kondisi]
+
+        if filter_petugas != "Semua":
+            filtered_df = filtered_df[filtered_df['Petugas'] == filter_petugas]
 
         # --- HIGHLIGHTING ---
         def style_rows(row):
