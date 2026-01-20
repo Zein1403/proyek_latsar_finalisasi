@@ -65,8 +65,8 @@ FLOOR_TO_SHEET = {
     "Penggunaan Inventaris" : "Data Barang yang Dikirim atau Digunakan",
 }
 
-SOURCE_FLOOR = "Penambahan Inventaris"         
-DESTINATION_SHEET = "Penggunaan Inventaris"
+SOURCE_FLOOR = "Data Inventaris Informasi Kualitas Udara BMKG PUSAT"         
+DESTINATION_SHEET = "Data Barang yang Dikirim atau Digunakan"
 
 
 LOG_HEADERS = ["No", "Kode Inventaris", "Nama Barang", "Tanggal Masuk", 
