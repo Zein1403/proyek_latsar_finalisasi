@@ -537,8 +537,8 @@ elif menu == "Menggunakan atau Mengirimkan barang":
         )
 
         st.success(f"✅ Stok berhasil dikurangi dan dicatat di Log.")
-    except Exception as e:
-        st.error(str(e))
+        except Exception as e:
+            st.error(str(e))
                                            
 elif menu == "Lihat Data":
     st.subheader("📊 Data Gudang")
