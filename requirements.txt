@@ -1,4 +1,5 @@
 streamlit
+streamlit-authenticator
 gspread
 google-auth
 google-auth-oauthlib
