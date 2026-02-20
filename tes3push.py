@@ -26,7 +26,7 @@ st.set_page_config(
     page_title=" Inventoria Untuk DIT",   # Title shown in browser tab
     page_icon="logo-bmkg.png",                                # Favicon (emoji or image path)
     layout="wide",                                 # "centered" or "wide"
-    initial_sidebar_state="expanded",               # "expanded" or "collapsed"
+   # initial_sidebar_state="expanded",               # "expanded" or "collapsed"
    
 )
 
