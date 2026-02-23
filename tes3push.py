@@ -21,6 +21,35 @@ import yaml
 from yaml.loader import SafeLoader
 
 
+# --- 1. LOAD CREDENTIALS FROM SECRETS ---
+# This pulls the 'usernames' dictionary we just made in the dashboard
+credentials = st.secrets["credentials"].to_dict()
+
+# --- 2. INITIALIZE AUTHENTICATOR ---
+authenticator = stauth.Authenticate(
+    credentials,
+    st.secrets["cookie"]["name"],
+    st.secrets["cookie"]["key"],
+    int(st.secrets["cookie"]["expiry_days"])
+)
+
+# --- 3. THE LOGIN UI ---
+# This creates the box where users type their name/pass
+name, authentication_status, username = authenticator.login("Login", "main")
+
+# --- 4. THE GATEKEEPER ---
+if authentication_status:
+    authenticator.logout("Logout", "sidebar")
+    st.sidebar.write(f"Selamat datang, **{name}**")
+    
+    # Put your app logic here
+    # Example: if menu == "Lihat Data": ...
+    
+elif authentication_status == False:
+    st.error("Username/password salah.")
+elif authentication_status == None:
+    st.warning("Silakan masukkan username dan password.")
+
 
 st.set_page_config(
     page_title=" Inventoria Untuk DIT",   # Title shown in browser tab
