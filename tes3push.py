@@ -34,21 +34,26 @@ authenticator = stauth.Authenticate(
 )
 
 # --- 3. THE LOGIN UI ---
-# This creates the box where users type their name/pass
-name, authentication_status, username = authenticator.login("Login", "main")
+# Note: Newer versions might only return (authentication_status)
+# but most still support this triple return. 
+# If it fails, try: authenticator.login() without variables.
+try:
+    authenticator.login(location='main')
+except Exception as e:
+    st.error(f"Login error: {e}")
 
 # --- 4. THE GATEKEEPER ---
-if authentication_status:
+# We check the session state directly which is safer in new versions
+if st.session_state["authentication_status"]:
     authenticator.logout("Logout", "sidebar")
-    st.sidebar.write(f"Selamat datang, **{name}**")
+    st.write(f"Selamat datang, **{st.session_state['name']}**")
     
-    # Put your app logic here
-    # Example: if menu == "Lihat Data": ...
+    # YOUR MAIN APP CODE HERE
     
-elif authentication_status == False:
-    st.error("Username/password salah.")
-elif authentication_status == None:
-    st.warning("Silakan masukkan username dan password.")
+elif st.session_state["authentication_status"] is False:
+    st.error("Username/password salah")
+elif st.session_state["authentication_status"] is None:
+    st.warning("Silakan masukkan username dan password")
 
 
 st.set_page_config(
