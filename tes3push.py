@@ -23,11 +23,9 @@ import streamlit as st
 import streamlit_authenticator as stauth
 
 # --- STEP 1: LOAD DATA ---
-# Pull your credentials from Secrets
 credentials = st.secrets["credentials"].to_dict()
 
-# --- STEP 2: DEFINE THE AUTHENTICATOR (Crucial!) ---
-# This "creates" the name 'authenticator'
+# --- STEP 2: DEFINE THE AUTHENTICATOR ---
 authenticator = stauth.Authenticate(
     credentials,
     st.secrets["cookie"]["name"],
@@ -35,28 +33,21 @@ authenticator = stauth.Authenticate(
     st.secrets["cookie"]["expiry_days"]
 )
 
-# --- STEP 3: USE THE AUTHENTICATOR ---
-# Now you can call .login() because 'authenticator' exists
+# --- STEP 3: USE THE AUTHENTICATOR (ONLY ONCE!) ---
 authenticator.login(location='main')
 
-authenticator.login(location='main')
-
+# --- STEP 4: THE GATEKEEPER ---
 # If NOT logged in, show warning and STOP the script immediately
 if not st.session_state["authentication_status"]:
     st.warning("Silakan masukkan username dan password di bawah.")
-    st.stop() # <--- This kills the script right here for hackers
+    st.stop() # <--- Everything below this is now safe
 
-# If the code reaches this line, it means the user IS logged in
+# --- STEP 5: YOUR APP (ONLY RUNS IF LOGGED IN) ---
 authenticator.logout("Logout", "sidebar")
 st.title("Selamat Datang di Sistem Inventaris")
-# ... your full app code can stay here, NO indentation needed! ...
+st.write(f"Logged in as: **{st.session_state['name']}**")
 
-# --- STEP 4: CHECK STATUS ---
-if st.session_state["authentication_status"]:
-    authenticator.logout("Logout", "sidebar")
-    st.write("Logged in!")
-    # ... rest of your app ...
-
+# ... Put your tables, inputs, and business logic here ...
 st.set_page_config(
     page_title=" Inventoria Untuk DIT",   # Title shown in browser tab
     page_icon="logo-bmkg.png",                                # Favicon (emoji or image path)
