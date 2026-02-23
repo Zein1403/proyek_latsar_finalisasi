@@ -19,35 +19,31 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
+import streamlit as st
+import streamlit_authenticator as stauth
 
-# 1. Show the Login Box
+# --- STEP 1: LOAD DATA ---
+# Pull your credentials from Secrets
+credentials = st.secrets["credentials"].to_dict()
+
+# --- STEP 2: DEFINE THE AUTHENTICATOR (Crucial!) ---
+# This "creates" the name 'authenticator'
+authenticator = stauth.Authenticate(
+    credentials,
+    st.secrets["cookie"]["name"],
+    st.secrets["cookie"]["key"],
+    st.secrets["cookie"]["expiry_days"]
+)
+
+# --- STEP 3: USE THE AUTHENTICATOR ---
+# Now you can call .login() because 'authenticator' exists
 authenticator.login(location='main')
 
-# 2. Check the Status
+# --- STEP 4: CHECK STATUS ---
 if st.session_state["authentication_status"]:
-    # --- START OF PROTECTED AREA ---
-    # Everything from here down MUST BE INDENTED
-    
     authenticator.logout("Logout", "sidebar")
-    st.sidebar.write(f"Selamat datang, **{st.session_state['name']}**")
-
-    # This is where your original app code goes:
-    menu = st.sidebar.selectbox("Pilih Menu", ["Dashboard", "Input Barang"])
-    
-    if menu == "Dashboard":
-        st.title("Data Inventaris")
-        # ... your code to show data ...
-        
-    # --- END OF PROTECTED AREA ---
-
-elif st.session_state["authentication_status"] is False:
-    st.error("Username/password salah")
-
-elif st.session_state["authentication_status"] is None:
-    st.warning("Silakan login untuk melanjutkan")
-    # STOP here so nothing below this runs
-    st.stop()
-
+    st.write("Logged in!")
+    # ... rest of your app ...
 
 st.set_page_config(
     page_title=" Inventoria Untuk DIT",   # Title shown in browser tab
