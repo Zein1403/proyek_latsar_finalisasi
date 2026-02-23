@@ -20,40 +20,33 @@ import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 
+# 1. Show the Login Box
+authenticator.login(location='main')
 
-# --- 1. LOAD CREDENTIALS FROM SECRETS ---
-# This pulls the 'usernames' dictionary we just made in the dashboard
-credentials = st.secrets["credentials"].to_dict()
-
-# --- 2. INITIALIZE AUTHENTICATOR ---
-authenticator = stauth.Authenticate(
-    credentials,
-    st.secrets["cookie"]["name"],
-    st.secrets["cookie"]["key"],
-    int(st.secrets["cookie"]["expiry_days"])
-)
-
-# --- 3. THE LOGIN UI ---
-# Note: Newer versions might only return (authentication_status)
-# but most still support this triple return. 
-# If it fails, try: authenticator.login() without variables.
-try:
-    authenticator.login(location='main')
-except Exception as e:
-    st.error(f"Login error: {e}")
-
-# --- 4. THE GATEKEEPER ---
-# We check the session state directly which is safer in new versions
+# 2. Check the Status
 if st.session_state["authentication_status"]:
+    # --- START OF PROTECTED AREA ---
+    # Everything from here down MUST BE INDENTED
+    
     authenticator.logout("Logout", "sidebar")
-    st.write(f"Selamat datang, **{st.session_state['name']}**")
+    st.sidebar.write(f"Selamat datang, **{st.session_state['name']}**")
+
+    # This is where your original app code goes:
+    menu = st.sidebar.selectbox("Pilih Menu", ["Dashboard", "Input Barang"])
     
-    # YOUR MAIN APP CODE HERE
-    
+    if menu == "Dashboard":
+        st.title("Data Inventaris")
+        # ... your code to show data ...
+        
+    # --- END OF PROTECTED AREA ---
+
 elif st.session_state["authentication_status"] is False:
     st.error("Username/password salah")
+
 elif st.session_state["authentication_status"] is None:
-    st.warning("Silakan masukkan username dan password")
+    st.warning("Silakan login untuk melanjutkan")
+    # STOP here so nothing below this runs
+    st.stop()
 
 
 st.set_page_config(
