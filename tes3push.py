@@ -37,11 +37,15 @@ authenticator = stauth.Authenticate(
 authenticator.login(location='main')
 
 # --- STEP 4: THE GATEKEEPER ---
-# If NOT logged in, show warning and STOP the script immediately
-if not st.session_state["authentication_status"]:
-    st.warning("Silakan masukkan username dan password di bawah.")
-    st.stop() # <--- Everything below this is now safe
+if st.session_state["authentication_status"] is False:
+    # This runs ONLY if they typed the wrong password
+    st.error("Username/password salah. Silakan hubungi admin jika lupa.")
+    st.stop()
 
+elif st.session_state["authentication_status"] is None:
+    # This runs when they haven't tried to log in yet
+    st.warning("Silakan masukkan username dan password untuk mengakses sistem.")
+    st.stop()
 # --- STEP 5: YOUR APP (ONLY RUNS IF LOGGED IN) ---
 authenticator.logout("Logout", "sidebar")
 st.title("Selamat Datang di Sistem Inventaris")
