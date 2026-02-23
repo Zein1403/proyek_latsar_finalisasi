@@ -39,6 +39,18 @@ authenticator = stauth.Authenticate(
 # Now you can call .login() because 'authenticator' exists
 authenticator.login(location='main')
 
+authenticator.login(location='main')
+
+# If NOT logged in, show warning and STOP the script immediately
+if not st.session_state["authentication_status"]:
+    st.warning("Silakan masukkan username dan password di bawah.")
+    st.stop() # <--- This kills the script right here for hackers
+
+# If the code reaches this line, it means the user IS logged in
+authenticator.logout("Logout", "sidebar")
+st.title("Selamat Datang di Sistem Inventaris")
+# ... your full app code can stay here, NO indentation needed! ...
+
 # --- STEP 4: CHECK STATUS ---
 if st.session_state["authentication_status"]:
     authenticator.logout("Logout", "sidebar")
